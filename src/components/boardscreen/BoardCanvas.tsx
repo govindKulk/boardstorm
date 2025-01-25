@@ -2,13 +2,14 @@ import { CircleType, RectangleType, TextType } from '@/types/shapes';
 import { KonvaEventObject, Node, NodeConfig } from 'konva/lib/Node';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { Stage, Layer } from 'react-konva';
+import { Stage, Layer, KonvaNodeComponent } from 'react-konva';
 import Rectangle from './shapes/Rectangle';
 import { useBoardContext } from '@/app/board/[...id]/page';
 import Circle from './shapes/Circle';
 import Text from './shapes/Text';
 import ShapeComponent from './shapes/Shape';
 import { Vector2d } from 'konva/lib/types';
+import { StageConfig } from 'konva/lib/Stage';
 
 
 
@@ -174,9 +175,6 @@ const BoardCanvas = () => {
   
     if (localPos) {
       switch (activeTool) {
-        case 'eraser':
-          erase();
-          break;
         case 'rectangle':
           addRectangle(localPos.x, localPos.y); // Add shape relative to the transformed coordinates
           break;
@@ -191,7 +189,7 @@ const BoardCanvas = () => {
       }
     }
 
-    if(activeTool !== "hand" && activeTool != "eraser"){
+    if(activeTool !== "hand" && activeTool != "eraser" && activeTool != "text"){
 
      setActiveTool('select'); // Reset the tool after action
     }
@@ -232,12 +230,7 @@ const BoardCanvas = () => {
     });
   };
 
-  function erase() {
-    if(selectedId){
-      const typeInitial = selectedId.split('-')[0];
-      console.log(typeInitial, "from erase func: ")
-    }
-  }
+
 
 
   return (
@@ -246,6 +239,7 @@ const BoardCanvas = () => {
       height={window.innerHeight}
       onMouseDown={handleStageClick}
       onTouchStart={handleStageClick}
+
       ref={stageRef}
       scaleX={scale}
       scaleY={scale}

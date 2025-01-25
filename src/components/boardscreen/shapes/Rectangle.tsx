@@ -73,21 +73,7 @@ const Rectangle: React.FC<ChildShapeProps<RectangleType, RectType>> = ({ shapePr
           });
         }}
       />
-      {isSelected && (
-        
-            <Transformer
-          ref={trRef}
-          flipEnabled={false}
-          boundBoxFunc={(oldBox, newBox) => {
-            // limit resize
-            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
-              return oldBox;
-            }
-            return newBox;
-          }}
-        />
-        
-      )}
+
 
 
     </React.Fragment>

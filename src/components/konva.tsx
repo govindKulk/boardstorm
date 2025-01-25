@@ -21,7 +21,7 @@ const Rectangle: React.FC<RectangleProps> = ({ shapeProps, isSelected, onSelect,
     if (isSelected) {
       // we need to attach transformer manually
       // @ts-ignore
-      trRef.current?.nodes([shapeRef.current]);
+      trRef.current?.nodes([shapeRef.current]);a
       // @ts-ignore
       trRef.current?.getLayer().batchDraw();
       

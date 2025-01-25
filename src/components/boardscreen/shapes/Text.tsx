@@ -7,6 +7,7 @@ import { Rect, Transformer, Circle as KonvaCircle, Text as KonvaText } from "rea
 import { Html } from "react-konva-utils";
 import { ChildShapeProps } from "./Shape";
 import { Neonderthaw } from "next/font/google";
+import { useBoardContext } from "@/app/board/[...id]/page";
 
 interface TextProps {
   shapeProps: TextType
@@ -22,18 +23,22 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
   const [isEditing, setIsEditing] = useState(false);
   const [textValue, setTextValue] = useState(shapeProps?.text)
 
+  const {setActiveTool} = useBoardContext();
+
   React.useEffect(() => {
     if (isSelected) {
       // we need to attach transformer manually
       console.log(shapeProps.id + "is selected")
-      // @ts-ignore
 
+      
+      // @ts-ignore
       trRef.current?.nodes([shapeRef.current]);
       // @ts-ignore
       trRef.current?.getLayer().batchDraw();
       
     }else{
         setIsEditing(false)
+        setActiveTool("select")
     }
   }, [isSelected]);
 
@@ -49,10 +54,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
         {
             isEditing && isSelected && <textarea
 
-            
-            onMouseOutCapture={(e) => {
-                console.log("outside..")
-            }}
+        
             style={{
                 position: 'absolute',
                 left: shapeRef.current?.x(),
@@ -73,6 +75,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
                 if(e.code == 'Enter'){
                     onTextChange && onTextChange(textValue)
                     setIsEditing(false);
+                    setActiveTool("select")
                 }
             }}
             autoFocus={true}
@@ -83,8 +86,14 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
 
         </Html>
       <KonvaText
-        onDblClick={() => setIsEditing(prev => !prev)}
-        onDblTap={() => setIsEditing(prev => !prev)}
+        onDblClick={() => {
+                    setActiveTool("text")
+                    setIsEditing(true);
+        }}
+        onDblTap={() => {
+                    setActiveTool("text")
+                    setIsEditing(true);
+        }}
         onClick={onSelect}
         onTap={onSelect}
         ref={shapeRef}
