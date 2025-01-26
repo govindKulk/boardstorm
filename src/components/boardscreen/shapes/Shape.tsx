@@ -7,7 +7,7 @@ import { Transformer as TransformerType, TransformerConfig } from 'konva/lib/sha
 import React, { Ref } from "react";
 import { Transformer } from "react-konva";
 import { Html } from "react-konva-utils";
-import { useBoardContext } from "@/app/board/[...id]/page";
+import { useBoardContext } from "@/app/board/[id]/page";
 
 interface ShapeComponentProps<T extends RectangleType | CircleType | TextType, K extends KonvaRectType | KonvaCircType | KonvaTextType> {
     shapeProps: T
@@ -18,6 +18,7 @@ interface ShapeComponentProps<T extends RectangleType | CircleType | TextType, K
     onDelete: () => void
     Component: React.FC<ChildShapeProps<T,K>>
     onTextChange?: (val: string) => void
+    onEditChange?: (editState: boolean) => void
 }
 
 export interface ChildShapeProps<T,K> { 
@@ -29,11 +30,12 @@ export interface ChildShapeProps<T,K> {
     trRef: Ref<TransformerType | null>; 
     shapeRef: React.RefObject<K | null>
     onTextChange?: (val:string) => void ,
+    onEditChange?: (editState: boolean) => void
 }
 
 
 
-function ShapeComponent<T extends RectangleType | CircleType | TextType, K extends KonvaCircType | KonvaRectType | KonvaTextType>({ shapeProps, isSelected, onSelect, onChange, handleDragStart, onDelete, Component, onTextChange }: ShapeComponentProps<T,K>) {
+function ShapeComponent<T extends RectangleType | CircleType | TextType, K extends KonvaCircType | KonvaRectType | KonvaTextType>({ shapeProps, isSelected, onSelect, onChange, handleDragStart, onDelete, Component, onTextChange, onEditChange }: ShapeComponentProps<T,K>) {
     const shapeRef = React.useRef<K | null>(null);
     const trRef = React.useRef<TransformerType | null>(null);
 
@@ -66,6 +68,7 @@ function ShapeComponent<T extends RectangleType | CircleType | TextType, K exten
                     trRef={trRef}
                     onTextChange={onTextChange}
                     shapeRef={shapeRef}
+                    onEditChange={onEditChange}
                 />
             }
             {isSelected && (

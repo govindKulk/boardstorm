@@ -3,7 +3,7 @@
 import React from 'react'
 import ToolsBar from './ToolsBar'
 import dynamic from 'next/dynamic';
-import { useBoardContext } from '@/app/board/[...id]/page';
+import { useBoardContext } from '@/app/board/[id]/page';
 
 // @ts-ignore
 const BoardCanvas = dynamic(() => import("./BoardCanvas"), {

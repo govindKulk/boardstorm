@@ -6,7 +6,7 @@ import { MdModeEditOutline } from "react-icons/md"; // pencil
 import { GoHorizontalRule } from "react-icons/go";
 import { FaRegStar } from "react-icons/fa";
 import { BsCursorFill } from "react-icons/bs";
-import { useBoardContext } from '@/app/board/[...id]/page';
+import { useBoardContext } from '@/app/board/[id]/page';
 import { FaRegHandSpock } from "react-icons/fa";
 import { BiEraser } from 'react-icons/bi';
 

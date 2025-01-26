@@ -7,21 +7,14 @@ import { Rect, Transformer, Circle as KonvaCircle, Text as KonvaText } from "rea
 import { Html } from "react-konva-utils";
 import { ChildShapeProps } from "./Shape";
 import { Neonderthaw } from "next/font/google";
-import { useBoardContext } from "@/app/board/[...id]/page";
+import { useBoardContext } from "@/app/board/[id]/page";
 
-interface TextProps {
-  shapeProps: TextType
-  isSelected: boolean
-  onSelect: VoidFunction
-  onChange: (shapeProps: TextType) => void
-  handleDragStart: () => void
-  onTextChange: (val: string) => void
-}
-const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, isSelected, onSelect, onChange, handleDragStart, onTextChange, shapeRef, trRef}) => {
+
+const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, isSelected, onSelect, onChange, handleDragStart, onTextChange, shapeRef, trRef, onEditChange}) => {
 
 
   const [isEditing, setIsEditing] = useState(false);
-  const [textValue, setTextValue] = useState(shapeProps?.text)
+  const [textValue, setTextValue] = useState(shapeProps?.text || '')
 
   const {setActiveTool} = useBoardContext();
 
@@ -38,10 +31,14 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
       
     }else{
         setIsEditing(false)
+        onEditChange?.(false)
+        if(textValue){
+          onTextChange?.(textValue)
+        }
         setActiveTool("select")
-    }
-  }, [isSelected]);
-
+      }
+    }, [isSelected]);
+    
   let previousHeight = 0;
   if(shapeRef?.current){
     previousHeight = shapeRef.current.height();
@@ -68,13 +65,14 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
                 setTextValue(e.target.value)
                 e.target.style.height = e.target.scrollHeight + 'px';
                 e.target.style.width = e.target.scrollWidth + 'px';
-            }}
-            onKeyDown={(e) => {
+              }}
+              onKeyDown={(e) => {
                 
                 console.log(e.code)
                 if(e.code == 'Enter'){
                     onTextChange && onTextChange(textValue)
                     setIsEditing(false);
+                    onEditChange?.(false)
                     setActiveTool("select")
                 }
             }}
@@ -89,10 +87,12 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
         onDblClick={() => {
                     setActiveTool("text")
                     setIsEditing(true);
-        }}
-        onDblTap={() => {
+                    onEditChange && onEditChange(true)
+                  }}
+                  onDblTap={() => {
                     setActiveTool("text")
                     setIsEditing(true);
+                    onEditChange && onEditChange(true)
         }}
         onClick={onSelect}
         onTap={onSelect}
@@ -130,7 +130,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
                 
                 width: Math.max(5, node && scaleX ? node.width() * scaleX  : 1),
                 height: Math.max(5, node && scaleY ? node.height() * scaleY  : 1),
-                fontSize: Math.max(15, node && scaleX && node.height() > previousHeight + 10 && node.height() < previousHeight - 10 ? node.width() * scaleX * .1 : node.fontSize() ),
+                fontSize: Math.max(15, node && scaleX && (node.height() > previousHeight + 10 || node.height() < previousHeight - 10) ? node.width() * scaleX * .1 : node.fontSize() ),
     
               });
 
