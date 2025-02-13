@@ -1,14 +1,15 @@
 import React from 'react'
-import { RiRectangleLine } from "react-icons/ri";
+import { RiMenu3Fill, RiRectangleLine } from "react-icons/ri";
 import { FaRegCircle } from "react-icons/fa";
-import { CiText } from "react-icons/ci";
+import { CiMenuBurger, CiText } from "react-icons/ci";
 import { MdModeEditOutline } from "react-icons/md"; // pencil
 import { GoHorizontalRule } from "react-icons/go";
 import { FaRegStar } from "react-icons/fa";
-import { BsCursorFill } from "react-icons/bs";
+import { BsCursorFill, BsMenuButton } from "react-icons/bs";
 import { useBoardContext } from '@/app/board/[id]/page';
 import { FaRegHandSpock } from "react-icons/fa";
 import { BiEraser } from 'react-icons/bi';
+import SingInButton from '../auth/signin-button';
 
 
 function ToolsBar() {
@@ -16,8 +17,25 @@ function ToolsBar() {
 
   const {activeTool, setActiveTool} = useBoardContext();
   return (
-    <div
-    className='flex justify-center max-sm:max-w-[400px] sm:w-[500px] mx-auto  shadow-xl px-8 rounded-xl border border-slate-400 bg-gray-100 absolute top-8 left-1/2 -translate-x-1/2 backdrop-blur-1 divide-x-2 divide-slate-300 z-10  '
+  <div
+  className="
+  flex justify-evenly items-center
+  max-w-screen-xl w-full mx-auto
+  absolute top-8 left-1/2 -translate-x-1/2
+   backdrop-blur-xl z-10
+
+   
+  "
+  >
+
+    {
+      // sidebar
+    }
+    <span className='bg-slate-800 rounded-xl  text-center p-2  font-bold shadow-xl hover:cursor-pointer'>
+      <RiMenu3Fill  color={"white"} size={30}   />
+    </span>
+      <div
+    className='flex justify-center max-sm:max-w-[400px] sm:w-[500px] mx-auto  shadow-xl px-8 rounded-xl border border-slate-400 bg-gray-100  divide-x-2 divide-slate-300 z-10  '
     >
       {
         toolsData.map((tool, i) => {
@@ -30,6 +48,10 @@ function ToolsBar() {
         })
       }
     </div>
+
+    {/* {buttons} */}
+    <SingInButton/>
+  </div>
 
   )
 }

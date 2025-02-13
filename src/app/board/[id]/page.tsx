@@ -3,22 +3,23 @@
 import BoardScreen from '@/components/boardscreen/BoardScreen'
 import { CanvasData } from '@/types/types'
 import { debounce } from '@/utils/debounce'
+import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
-import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useState } from 'react'
+import React, { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useState } from 'react'
 
 export default function SingleBoardPage() {
-  
 
 
 
 
-  
+
+
   return (
     <div
 
     >
       <BoardContextProvider>
-        <BoardScreen/>
+        <BoardScreen />
       </BoardContextProvider>
     </div>
   )
@@ -35,13 +36,13 @@ interface BoardContextType {
 
 let defaultValues: BoardContextType = {
   activeTool: 'select',
-  setActiveTool: () => {},
+  setActiveTool: () => { },
   canvasData: {
     shapes: []
   },
-  setCanvasData: () => {}
+  setCanvasData: () => { }
 }
-const boardContext  = createContext<BoardContextType>(defaultValues);
+const boardContext = createContext<BoardContextType>(defaultValues);
 
 const BoardContextProvider = ({
   children
@@ -52,48 +53,58 @@ const BoardContextProvider = ({
   const [activeTool, setActiveTool] = useState('select');
   const [canvasData, setCanvasData] = useState<CanvasData>(null);
 
-  
+
   const [boardId, setBoardId] = useState<string | null>(null);
 
 
 
   console.log(boardId);
-  const {id} = useParams();
+  const { id } = useParams();
+  const session = useSession()
+  console.log("session : ", session);
 
 
-  
   useEffect(() => {
-    if(id){
+    if (id) {
       setBoardId(id as string);
     }
 
-    const boardData = JSON.parse(localStorage.getItem(`board-${boardId}` ) || 'null');
+    const boardData = JSON.parse(localStorage.getItem(`board-${boardId}`) || 'null');
     console.log(boardData);
-    if (boardData){
+    if (boardData) {
       setCanvasData(boardData);
     }
 
 
-    
+
   }, [boardId])
 
-  function setLocalData(canvasData: CanvasData){
-    localStorage.setItem(`board-${boardId}`, JSON.stringify(canvasData
-    ));
+  function setLocalData(canvasData: CanvasData) {
+    console.log("called set local data")
+    if(boardId){
+      localStorage.setItem(`board-${boardId}`, JSON.stringify(canvasData
+      ));
+    }
   }
 
-  const  debounceSetLocalData =      debounce((canvasData) => setLocalData(canvasData), 5000);
+  const debounceSetLocalData = useMemo(
+    () => debounce((canvasData) => setLocalData(canvasData), 5000),
+    [boardId] // Empty dependency array ensures it stays the same across renders.
+  );
+  
 
   return (
-    <boardContext.Provider value={{activeTool, setActiveTool, canvasData, setCanvasData:  (canvasData: CanvasData) => {
-      debounceSetLocalData(canvasData);
-      return setCanvasData(canvasData);
-    }}} >
-
+    <boardContext.Provider value={{
+      activeTool, setActiveTool, canvasData, setCanvasData: (canvasData: CanvasData) => {
+        debounceSetLocalData(canvasData);
+        return setCanvasData(canvasData);
+      }
+    }} >
+      
       {children}
     </boardContext.Provider>
   )
 }
 
 
-export const useBoardContext = () =>useContext(boardContext);
+export const useBoardContext = () => useContext(boardContext);

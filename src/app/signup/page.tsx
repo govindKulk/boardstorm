@@ -1,7 +1,11 @@
+import { SignIn } from '@/components/auth/signin-button'
 import React from 'react'
 
 export default function SingUpPage() {
   return (
-    <div>sing up page</div>
+    <div>sign up page
+
+      <SignIn/>
+    </div>
   )
 }

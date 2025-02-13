@@ -13,7 +13,12 @@ interface ShapeComponentProps<T extends RectangleType | CircleType | TextType> {
 
 
 export type CanvasData = {
-    shapes: Shape[]
+    shapes: Shape[],
+    position?: {
+        x: number,
+        y: number
+    },
+    scale?: number
 } | null
 
 

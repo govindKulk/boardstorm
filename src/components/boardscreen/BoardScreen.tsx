@@ -1,9 +1,10 @@
 "use client"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import ToolsBar from './ToolsBar'
 import dynamic from 'next/dynamic';
 import { useBoardContext } from '@/app/board/[id]/page';
+import { useSession } from 'next-auth/react';
 
 // @ts-ignore
 const BoardCanvas = dynamic(() => import("./BoardCanvas"), {
@@ -14,6 +15,12 @@ const BoardCanvas = dynamic(() => import("./BoardCanvas"), {
 function BoardScreen() {
     console.log("board screen")
     const {activeTool, setActiveTool} = useBoardContext();
+
+    const {data} = useSession();
+    useEffect(() => {
+        console.log("session from boardcanvas >> " , data)
+    }, [])
+    console.log("session from boardcanvas >> " , data)
 
     function handleKeys(e: React.KeyboardEvent<HTMLDivElement>) {
         console.log(e.key)
@@ -43,7 +50,7 @@ function BoardScreen() {
     }
 
   return (
-    <div tabIndex={0}  onKeyDown={handleKeys} onKeyDownCapture={handleKeys}>
+    <div tabIndex={0}  onKeyDown={handleKeys} onKeyDownCapture={handleKeys} className='overflow-y-hidden'>
     <ToolsBar/>
     <BoardCanvas/>  
     </div>

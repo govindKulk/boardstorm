@@ -1,8 +1,13 @@
+import SingInButton from '@/components/auth/signin-button'
 import React from 'react'
 
-export default function SingInPage() {
+function SignInpage() {
   return (
-    <div>Sign in page</div>
+    <div>
+      <SingInButton/>
+
+    </div>
   )
 }
-k
+
+export default SignInpage

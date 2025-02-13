@@ -9,7 +9,9 @@ import Circle from './shapes/Circle';
 import Text from './shapes/Text';
 import ShapeComponent from './shapes/Shape';
 import { Vector2d } from 'konva/lib/types';
-import { StageConfig } from 'konva/lib/Stage';
+import { Stage as StageTypes } from 'konva/lib/Stage';
+import { CanvasData } from '@/types/types';
+
 
 
 
@@ -68,7 +70,7 @@ const BoardCanvas = () => {
 
 
       setCanvasData({
-
+        ...canvasData,
         shapes: [
           ...canvasData?.shapes,
           newShape
@@ -78,7 +80,7 @@ const BoardCanvas = () => {
     } else {
       setCanvasData({
 
-
+        ...canvasData,
         shapes: [newShape]
       })
 
@@ -166,7 +168,7 @@ const BoardCanvas = () => {
     }
 
 
-    if (isTextEditting) {
+    if (isTextEditting || activeTool == "hand") {
       return;
     }
 
@@ -195,6 +197,7 @@ const BoardCanvas = () => {
                 let filteredCanvas = canvasData.shapes.filter(shape => shape.id !== data.line.id);
 
                 setCanvasData({
+                  ...canvasData,
                   shapes: filteredCanvas
                 })
 
@@ -218,8 +221,8 @@ const BoardCanvas = () => {
     console.log(canvasData, " << canvas data")
   }, [canvasData])
   const stageRef = useRef<any>(null); // Reference to the stage
-  const [scale, setScale] = useState(1); // Track zoom scale
-  const [position, setPosition] = useState({ x: 0, y: 0 }); // Track stage position
+  const [scale, setScale] = useState(canvasData?.scale || 1); // Track zoom scale
+  const [position, setPosition] = useState({ x: canvasData?.position?.x || 0, y: canvasData?.position?.y || 0 }); // Track stage position
 
   // Handle zoom
   const handleWheel = (e: any) => {
@@ -245,19 +248,48 @@ const BoardCanvas = () => {
       x: pointer.x - mousePointTo.x * newScale,
       y: pointer.y - mousePointTo.y * newScale,
     });
+
+    setCanvasData({
+      ...canvasData,
+      position: {
+        x: position.x,
+        y: position.y
+      },
+      scale
+    })
   };
+
+  const getMatrixPoints = (stage: StageTypes | null) => {
+
+    const pointerPosition = stage?.getPointerPosition(); // Absolute coordinates
+    const transform = stage?.getAbsoluteTransform().copy(); // Copy transform matrix
+    transform?.invert(); // Invert the transform to map screen space to local space
+    const point = transform?.point(pointerPosition as Vector2d); 
+
+    return point;
+  }
+  const handleStageDrag = (e: KonvaEventObject<DragEvent, Node<NodeConfig>>) => {
+    if (activeTool !== "hand") return;
+
+    const stage = e.target.getStage();
+    if (!stage) return;
+
+    const newPos = stage.position(); // Get the new position of the stage
+
+    setPosition(newPos); // Update state
+
+    setCanvasData({
+      ...canvasData,
+      position: { x: newPos.x, y: newPos.y } // Use the new position directly
+    });
+};
 
 
   const handleMouseMove = (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => {
     if(activeTool === "pencil" && isPencilDrawing){
       const stage = e.target.getStage();
+      const point = getMatrixPoints(stage);
 
-
-
-      const pointerPosition = stage?.getPointerPosition(); // Absolute coordinates
-      const transform = stage?.getAbsoluteTransform().copy(); // Copy transform matrix
-      transform?.invert(); // Invert the transform to map screen space to local space
-      const point = transform?.point(pointerPosition as Vector2d); 
       if(point){
           // add point
 
@@ -278,6 +310,7 @@ const BoardCanvas = () => {
         if(lastLine.points?.length > 2){
           let filteredShapes = canvasData.shapes.filter((shape) => shape.id != lastLine?.id)
           setCanvasData({
+            ...canvasData,
             shapes: [
               ...filteredShapes,
               lastLine
@@ -288,6 +321,7 @@ const BoardCanvas = () => {
         }else{
           let filteredShapes = canvasData.shapes.filter((shape) => shape.id != lastLine?.id)
           setCanvasData({
+            ...canvasData,
             shapes: [
               ...filteredShapes,
               
@@ -318,6 +352,9 @@ const BoardCanvas = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onTouchStart={handleStageClick}
+      onDragEnd={handleStageDrag}
+      onDragStart={handleStageDrag}
+      onDragMove={handleStageDrag}
 
       ref={stageRef}
       scaleX={scale}
@@ -344,6 +381,7 @@ const BoardCanvas = () => {
 
 
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -354,6 +392,7 @@ const BoardCanvas = () => {
                       shapes.push(shape);
         
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       });
                     }}
@@ -365,7 +404,7 @@ const BoardCanvas = () => {
                       const shapes = canvasData?.shapes;
                       shapes[i] = newAttrs;
                       setCanvasData({
-
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -385,6 +424,7 @@ const BoardCanvas = () => {
                       let shapes = canvasData?.shapes;
                       shapes.splice(i, 1);
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -398,6 +438,7 @@ const BoardCanvas = () => {
                         circle
                       ]
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -410,6 +451,7 @@ const BoardCanvas = () => {
                       const shapes = canvasData?.shapes;
                       shapes[i] = newAttrs as CircleType;
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -435,6 +477,7 @@ const BoardCanvas = () => {
                         text: val
                       }
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -449,6 +492,7 @@ const BoardCanvas = () => {
                         text
                       ]
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -460,6 +504,7 @@ const BoardCanvas = () => {
                       const shapes = canvasData?.shapes;
                       shapes[i] = newAttrs;
                       setCanvasData({
+                        ...canvasData,
                         shapes
                       })
                     }}
@@ -470,6 +515,7 @@ const BoardCanvas = () => {
                         shapes.splice(i, 1);
                         console.log(shapes)
                         setCanvasData({
+                          ...canvasData,
                           shapes
                         })
                       }
