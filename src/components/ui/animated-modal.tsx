@@ -203,7 +203,7 @@ const Overlay = ({ className }: { className?: string }) => {
       }}
 
       
-        className={`fixed inset-0 w-screen  bg-black bg-opacity-50 z-50 ${className}`}
+        className={`fixed inset-0 w-screen left-0  bg-black bg-opacity-50 z-100 ${className} !left-0`}
     
     ></motion.div>
   );

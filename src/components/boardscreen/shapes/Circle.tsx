@@ -5,17 +5,13 @@ import { Transformer as TransformerType, TransformerConfig } from 'konva/lib/sha
 import React from "react";
 import { Rect, Transformer, Circle as KonvaCircle } from "react-konva";
 import { ChildShapeProps } from "./Shape";
+import { useBoardContext } from "@/contexts/BoardContext";
 
-interface CircleProps {
-  shapeProps: CircleType
-  isSelected: boolean
-  onSelect: VoidFunction
-  onChange: (shapeProps: CircleType) => void
-  handleDragStart: () => void
-}
+
 const Circle: React.FC<ChildShapeProps<CircleType, KonvaCircleType>> = ({ shapeProps, isSelected, onSelect, onChange, handleDragStart, trRef, shapeRef}) => {
 
 
+  const {activeTool} = useBoardContext();
   React.useEffect(() => {
     if (isSelected) {
       // we need to attach transformer manually
@@ -36,7 +32,7 @@ const Circle: React.FC<ChildShapeProps<CircleType, KonvaCircleType>> = ({ shapeP
         onTap={onSelect}
         ref={shapeRef}
         {...shapeProps}
-        draggable
+        draggable={activeTool !== "pencil"}
         onDragStart={handleDragStart}
         onDragEnd={(e) => {
           onChange({

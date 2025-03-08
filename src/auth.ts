@@ -28,6 +28,7 @@ export const {
                 
                 try {
                     const user = await prisma.user.findUnique({
+            
                         where: { email: email as string }
                     });
                     
@@ -62,6 +63,7 @@ export const {
                     ...session.user,
                     id: token.id as string,
                     email: token.email as string,
+                    
                 };
             }
         

@@ -7,7 +7,8 @@ import { Rect, Transformer, Circle as KonvaCircle, Text as KonvaText } from "rea
 import { Html } from "react-konva-utils";
 import { ChildShapeProps } from "./Shape";
 import { Neonderthaw } from "next/font/google";
-import { useBoardContext } from "@/app/board/[id]/page";
+import { useBoardContext } from "@/contexts/BoardContext";
+import { useTheme } from "next-themes";
 
 
 const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, isSelected, onSelect, onChange, handleDragStart, onTextChange, shapeRef, trRef, onEditChange}) => {
@@ -15,6 +16,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
 
   const [isEditing, setIsEditing] = useState(false);
   const [textValue, setTextValue] = useState(shapeProps?.text || '')
+  const {theme} = useTheme();
 
   const {setActiveTool} = useBoardContext();
 
@@ -55,6 +57,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
             style={{
                 position: 'absolute',
                 left: shapeRef.current?.x(),
+                color: theme === "dark" ? 'white' : 'black',
                 top: shapeRef.current?.y(),
                 minWidth: shapeRef.current?.width(),
                 minHeight: shapeRef.current?.height(),
@@ -99,6 +102,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
         ref={shapeRef}
         {...shapeProps}
         draggable
+        letterSpacing={shapeProps.strokeWidth ? 5: 2}
         lineHeight={1.5}
         onDragStart={handleDragStart}
         onDragEnd={(e) => {
@@ -108,6 +112,7 @@ const Text: React.FC<ChildShapeProps<TextType, KonvaTextType>> = ({ shapeProps, 
             y: e.target.y(),
           });
         }}
+        
 
         onTransformEnd={(e) => {
           // transformer is changing scale of the node

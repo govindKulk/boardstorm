@@ -4,13 +4,14 @@ import { KonvaEventObject, Node, NodeConfig } from 'konva/lib/Node';
 import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer, KonvaNodeComponent, Line } from 'react-konva';
 import Rectangle from './shapes/Rectangle';
-import { useBoardContext } from '@/app/board/[id]/page';
 import Circle from './shapes/Circle';
 import Text from './shapes/Text';
 import ShapeComponent from './shapes/Shape';
 import { Vector2d } from 'konva/lib/types';
 import { Stage as StageTypes } from 'konva/lib/Stage';
 import { CanvasData } from '@/types/types';
+import { useBoardContext } from '@/contexts/BoardContext';
+import { useTheme } from 'next-themes';
 
 
 
@@ -20,7 +21,7 @@ import { CanvasData } from '@/types/types';
 
 const BoardCanvas = () => {
 
-  const { canvasData, setCanvasData, activeTool, setActiveTool } = useBoardContext();
+  const { canvasData, setCanvasData, activeTool, setActiveTool, color, strokeWidth, drawMode } = useBoardContext();
 
 
 
@@ -29,9 +30,11 @@ const BoardCanvas = () => {
   const [isTextEditting, setIsTextEditing] = React.useState<boolean>(false);
   const [isPencilDrawing, setIsPencilDrawing] = React.useState<boolean>(false);
   const [lastLine, setLastLine] = useState<Shape | null>(null)
+  const {theme} = useTheme();
   
 
   const addShape = (x: number, y: number, type: string) => {
+
     let newShape: Shape = {
       id: `${type}-id-${crypto.randomUUID()}`,
       x,
@@ -39,15 +42,28 @@ const BoardCanvas = () => {
       width: 100,
       height: 100,
       radius: 50,
-      fontSize: 30,
-      stroke: 'black',
+      fontSize: strokeWidth * 5,
+      stroke: color,
+      strokeWidth,
       type,
       text: "Add Your Text Here"
   
     }
+
+    if(drawMode === 'fill' && type != 'pencil'){
+      delete newShape.stroke;
+      newShape.fill = color;
+    }
+
+
+    if(type === "text"){
+      delete newShape.strokeWidth;
+    }
+
     if(type === "circle" || type === "text"){
       delete newShape.height;
       delete newShape.width;
+      
       
     }else if (type == "rectangle"){  
       delete newShape.fontSize;
@@ -250,6 +266,7 @@ const BoardCanvas = () => {
     });
 
     setCanvasData({
+      shapes: [],
       ...canvasData,
       position: {
         x: position.x,
@@ -279,6 +296,7 @@ const BoardCanvas = () => {
     setPosition(newPos); // Update state
 
     setCanvasData({
+      shapes: [],
       ...canvasData,
       position: { x: newPos.x, y: newPos.y } // Use the new position directly
     });
@@ -467,7 +485,9 @@ const BoardCanvas = () => {
                 return (
                   <ShapeComponent
                     key={text.id}
-                    shapeProps={text}
+                    shapeProps={{
+                      ...text,
+                    }}
                     isSelected={text.id === selectedId}
                     onTextChange={(val) => {
                       console.log("changin text.. ")
@@ -534,8 +554,10 @@ const BoardCanvas = () => {
                                 <Line
                                   key={i}
                                   points={line.points}
-                                  stroke={line.stroke ?? 'black'}
-                                  strokeWidth={5}
+                                  stroke={
+                                   theme === "dark" && (line.stroke === "#475569") ? 'white' : line.stroke 
+                                    }
+                                  strokeWidth={line.strokeWidth}
                                   tension={0.5}
                                   lineCap="round"
                                   lineJoin="round"

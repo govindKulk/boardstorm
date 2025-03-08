@@ -7,7 +7,7 @@ import { Transformer as TransformerType, TransformerConfig } from 'konva/lib/sha
 import React, { Ref } from "react";
 import { Transformer } from "react-konva";
 import { Html } from "react-konva-utils";
-import { useBoardContext } from "@/app/board/[id]/page";
+import { useBoardContext } from "@/contexts/BoardContext";
 
 interface ShapeComponentProps<T extends RectangleType | CircleType | TextType, K extends KonvaRectType | KonvaCircType | KonvaTextType> {
     shapeProps: T
@@ -64,7 +64,7 @@ function ShapeComponent<T extends RectangleType | CircleType | TextType, K exten
                     onSelect={activeTool === "eraser" ? onDelete : onSelect}
                     onChange={onChange}
                     handleDragStart={handleDragStart}
-                    isSelected={isSelected}
+                    isSelected={activeTool === "pencil" ? false : isSelected}
                     trRef={trRef}
                     onTextChange={onTextChange}
                     shapeRef={shapeRef}
