@@ -8,6 +8,7 @@ import { getBoards } from "../actions/boards";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import AllBoardsClient from "@/components/allboards/AllBoardsClient";
+import RenderServiceProvider from "@/contexts/RenderServiceContext";
 
 // Dummy data based on board schema
 const boards = [
@@ -66,7 +67,9 @@ export default async function AllBoardsPage() {
  
   
   return (
-     <AllBoardsClient boards={boardsData}/>
+
+      <AllBoardsClient boards={boardsData}/>
+
 
   )
 }

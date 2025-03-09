@@ -3,6 +3,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import SingleBoardTemplate from "@/components/templates/SingleBoardTemplate";
 import { BoardContextProvider } from "@/contexts/BoardContext";
+import RenderServiceProvider from "@/contexts/RenderServiceContext";
 
 
 export const metadata: Metadata = {
@@ -18,15 +19,18 @@ export default function RootLayout({
   return (
 
     <SidebarProvider>
-      <BoardContextProvider>
-        <>
-        <AppSidebar />
-        <SingleBoardTemplate children={children} />
-        </>
+      <RenderServiceProvider>
+        <BoardContextProvider>
+          <>
+            <AppSidebar />
+            <SingleBoardTemplate children={children} />
+          </>
 
 
 
-      </BoardContextProvider>
+        </BoardContextProvider>
+
+      </RenderServiceProvider>
     </SidebarProvider>
   );
 }

@@ -5,6 +5,7 @@ import AllBoardsScreen from './AllBoardsScreen'
 import AllBoardNavbar from './AlllBoardNavbar'
 import { Skeleton } from '../ui/skeleton'
 
+
 function AllBoardsClient({
     boards
 }: {
@@ -42,5 +43,6 @@ function AllBoardsClient({
         </div>
     )
 }
+
 
 export default AllBoardsClient

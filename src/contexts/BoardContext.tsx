@@ -140,8 +140,9 @@ export const BoardContextProvider = ({
 
       (async () => {
         const { error: dbBoardError, data: dbBoardData } = await getSingleBoard(boardId);
+        const boardData = JSON.parse(localStorage.getItem(`board-${boardId}`) || 'null');
+        console.log("board data is", boardData)
         if (dbBoardError) {
-          const boardData = JSON.parse(localStorage.getItem(`board-${boardId}`) || 'null');
           console.log(boardData);
           if (boardData && !isConnected) {
             console.log('ls data fetch')
@@ -151,11 +152,18 @@ export const BoardContextProvider = ({
           if(!isConnected && dbBoardData){
             console.log('db data fetch')
             const {shapes, position, scale } = dbBoardData;
+
+            if(boardData && boardData.shapes && boardData.shapes.length > shapes.length){
+              setCanvasData(boardData);
+              return;
+            }
             setCanvasData({
               shapes,
               position,
               scale
             } as CanvasData);
+
+
           }
         }
       })()
@@ -180,6 +188,7 @@ export const BoardContextProvider = ({
       }
 
       setDataBaseData(canvasData);
+      setLocalData(canvasData);
 
     }
 
@@ -192,7 +201,9 @@ export const BoardContextProvider = ({
     if (boardId) {
       localStorage.setItem(`board-${boardId}`, JSON.stringify(canvasData
       ));
-      // toast.success("Locally Saved Data");
+      toast.success("Locally Saved Data", {
+        position: "bottom-left"
+      });
     }
   }
 
