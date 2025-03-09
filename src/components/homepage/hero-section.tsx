@@ -17,13 +17,8 @@ type SparkleType = {
   }
 }
 
-// Sparkle component for the animation effect
-const Sparkles = ({ children }: {
-  children: React.ReactNode
-}) => {
+const Sparkles = ({ children }: { children: React.ReactNode }) => {
   const [sparkles, setSparkles] = useState<SparkleType[]>([])
-
-
 
   useEffect(() => {
     const generateSparkles = () => {
@@ -43,13 +38,11 @@ const Sparkles = ({ children }: {
           },
         })
       }
-
       setSparkles(newSparkles)
     }
 
     generateSparkles()
     const interval = setInterval(generateSparkles, 1500)
-
     return () => clearInterval(interval)
   }, [])
 
@@ -107,9 +100,12 @@ export function HeroSection() {
           </div>
           <div className="mt-12 w-full max-w-5xl overflow-hidden rounded-lg border bg-background shadow-xl">
             <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-gradient-to-br from-primary/20 via-muted to-background">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-muted-foreground text-sm">Interactive Board Preview</div>
-              </div>
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src="https://drive.google.com/file/d/1KYgz06iM9O_lo4QNqvOIxVjtNGAoUpiW/view?usp=sharing"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              ></iframe>
             </div>
           </div>
         </div>
@@ -117,4 +113,3 @@ export function HeroSection() {
     </section>
   )
 }
-
