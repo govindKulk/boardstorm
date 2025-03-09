@@ -102,7 +102,7 @@ export function HeroSection() {
             <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-gradient-to-br from-primary/20 via-muted to-background">
               <iframe
                 className="absolute inset-0 w-full h-full"
-                src="https://drive.google.com/file/d/1KYgz06iM9O_lo4QNqvOIxVjtNGAoUpiW/view?usp=sharing"
+                src="https://drive.google.com/file/d/1KYgz06iM9O_lo4QNqvOIxVjtNGAoUpiW/preview"
                 allow="autoplay; encrypted-media"
                 allowFullScreen
               ></iframe>
