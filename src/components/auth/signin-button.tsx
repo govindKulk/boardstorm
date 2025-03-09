@@ -17,8 +17,11 @@ export default function SingInButton() {
 
   return (
     <div className="    ">
-      <Modal>
-        <ModalTrigger className="bg-black dark:bg-white dark:text-black text-white font-bold flex justify-center ">
+      <Modal
+      >
+        <ModalTrigger
+        
+        className="bg-black dark:bg-white dark:text-black text-white font-bold flex justify-center ">
           <span className=" text-center transition duration-500">
             Sing in / Sign up.
           </span>
@@ -28,6 +31,7 @@ export default function SingInButton() {
         className="max-w-md"
         >
         <ModalBody
+        
         className=""
         >
           <ModalContent
