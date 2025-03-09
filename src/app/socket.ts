@@ -12,7 +12,7 @@ export class SocketClass {
 
     static getInstance(): Socket {
         if (!this.socket) {
-            this.socket = io("http://localhost:5000", {
+            this.socket = io("https://boardstorm-sockets.onrender.com", {
                 autoConnect: false,
                 withCredentials: true, // Must match server credentials
                 transports: ["websocket"], // Ensure WebSocket transport is used
