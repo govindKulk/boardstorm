@@ -1,7 +1,7 @@
 import { prisma } from "@/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { id?: string } }) {
     const userId = params?.id; // Ensure id exists and is an array
     console.log("User ID:", userId);
 
