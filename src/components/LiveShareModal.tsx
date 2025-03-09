@@ -165,7 +165,7 @@ export default function LiveShareModalButton() {
                                 <span
                                     onClick={handleCopy}
 
-                                    ref={linkRef} className="text-sm break-keep border border-green-500 block rounded-xl p-2 text-green-900 hover:bg-green-300/60 transition cursor-pointer ">http://localhost:3000/boards/{params.id}?room={roomIdState}</span>
+                                    ref={linkRef} className="text-sm break-keep border border-green-500 block rounded-xl p-2 text-green-900 hover:bg-green-300/60 transition cursor-pointer ">https://boardstorm.vercel.app/boards/{params.id}?room={roomIdState}</span>
 
                                 {!copied ? <span className="flex items-center cursor-pointer text-slate-600 my-2 gap-2 text-sm transition-all">Copy: <CopyIcon
                                     onClick={handleCopy}
