@@ -27,7 +27,9 @@ interface BoardContextType {
   strokeWidth: number,
   setDrawMode: Dispatch<SetStateAction<string>>,
   drawMode: string,
-  canvasLoading: boolean
+  canvasLoading: boolean,
+  triggerDownload: boolean,
+  setTriggerDownload: Dispatch<SetStateAction<boolean>>,
 }
 
 let defaultValues: BoardContextType = {
@@ -45,7 +47,9 @@ let defaultValues: BoardContextType = {
   strokeWidth: 3,
   setStrokeWidth: () => { },
   drawMode: 'stroke',
-  setDrawMode: () => { }
+  setDrawMode: () => { },
+  triggerDownload: false,
+  setTriggerDownload: () => { }
 }
 const boardContext = createContext<BoardContextType>(defaultValues);
 
@@ -77,7 +81,7 @@ export const BoardContextProvider = ({
   const params = useSearchParams()
   const path = usePathname();
   const [isDemoPage, setIsDemoPage] = useState(path.split('/')[2] === "demo")
-
+  const [triggerDownload, setTriggerDownload] = useState(false);
 
   const socketRef = useRef<Socket | null>(null)
   const [roomId, setRoomId] = useState(params.get("room") || "");
@@ -243,7 +247,7 @@ export const BoardContextProvider = ({
 
   return (
     <boardContext.Provider value={{
-      activeTool, setActiveTool, setSocketRef, canvasLoading, setRoomId, canvasData, color, setColor, strokeWidth, setStrokeWidth, drawMode, setDrawMode, setCanvasData: (canvasParamsData: CanvasData, isFromSockets = false) => {
+      activeTool, setActiveTool, setSocketRef, canvasLoading,triggerDownload,setTriggerDownload, setRoomId, canvasData, color, setColor, strokeWidth, setStrokeWidth, drawMode, setDrawMode, setCanvasData: (canvasParamsData: CanvasData, isFromSockets = false) => {
         debounceSetLocalData(canvasParamsData);
         debounceStoreDbData(canvasParamsData);
         //   let ids = canvasData?.shapes.map(shape => shape.id);

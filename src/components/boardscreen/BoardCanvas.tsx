@@ -21,7 +21,7 @@ import { useTheme } from 'next-themes';
 
 const BoardCanvas = () => {
 
-  const { canvasData, setCanvasData, activeTool, setActiveTool, color, strokeWidth, drawMode } = useBoardContext();
+  const { canvasData, setCanvasData, activeTool, setActiveTool, color, strokeWidth, drawMode, triggerDownload, setTriggerDownload } = useBoardContext();
 
 
 
@@ -30,8 +30,8 @@ const BoardCanvas = () => {
   const [isTextEditting, setIsTextEditing] = React.useState<boolean>(false);
   const [isPencilDrawing, setIsPencilDrawing] = React.useState<boolean>(false);
   const [lastLine, setLastLine] = useState<Shape | null>(null)
-  const {theme} = useTheme();
-  
+  const { theme } = useTheme();
+
 
   const addShape = (x: number, y: number, type: string) => {
 
@@ -47,40 +47,40 @@ const BoardCanvas = () => {
       strokeWidth,
       type,
       text: "Add Your Text Here"
-  
+
     }
 
-    if(drawMode === 'fill' && type != 'pencil'){
+    if (drawMode === 'fill' && type != 'pencil') {
       delete newShape.stroke;
       newShape.fill = color;
     }
 
 
-    if(type === "text"){
+    if (type === "text") {
       delete newShape.strokeWidth;
     }
 
-    if(type === "circle" || type === "text"){
+    if (type === "circle" || type === "text") {
       delete newShape.height;
       delete newShape.width;
-      
-      
-    }else if (type == "rectangle"){  
+
+
+    } else if (type == "rectangle") {
       delete newShape.fontSize;
       delete newShape.radius;
-    }else if (type == "pencil"){
+    } else if (type == "pencil") {
       delete newShape.fontSize;
       delete newShape.radius;
       delete newShape.height;
       delete newShape.width;
-      
+
       newShape.x = 0
       newShape.y = 0
-      
+
       newShape.points = [x, y]
       setLastLine(newShape);
 
-      
+
     }
     if (canvasData?.shapes && canvasData?.shapes.length > 0) {
 
@@ -106,29 +106,29 @@ const BoardCanvas = () => {
   function checkIfClickedOnLine(x: number, y: number) {
     const TOLERANCE = 5; // Adjust this value for sensitivity
     const lines = canvasData?.shapes.filter((shape) => shape.type === "pencil");
-  
+
     if (!lines || lines.length === 0) {
       return {
         line: null,
         res: false,
       };
     }
-  
+
     let selectedLine: any = null;
-  
+
     for (const line of lines) {
       const points = line.points;
       if (!points || points.length < 4) continue; // Skip invalid lines
-  
+
       for (let i = 0; i < points.length - 2; i += 2) {
         const x1 = points[i];
         const y1 = points[i + 1];
         const x2 = points[i + 2];
         const y2 = points[i + 3];
-  
+
         // Check distance from the point (x, y) to the segment (x1, y1) -> (x2, y2)
         const dist = pointToSegmentDistance(x, y, x1, y1, x2, y2);
-  
+
         if (dist <= TOLERANCE) {
           selectedLine = line;
           return {
@@ -138,33 +138,33 @@ const BoardCanvas = () => {
         }
       }
     }
-  
+
     return {
       line: null,
       res: false,
     };
   }
-  
+
   // Helper function to calculate distance from a point to a line segment
   function pointToSegmentDistance(px: number, py: number, x1: number, y1: number, x2: number, y2: number): number {
     const dx = x2 - x1;
     const dy = y2 - y1;
-  
+
     const lenSq = dx * dx + dy * dy;
     let t = ((px - x1) * dx + (py - y1) * dy) / lenSq;
-  
+
     t = Math.max(0, Math.min(1, t));
-  
+
     const closestX = x1 + t * dx;
     const closestY = y1 + t * dy;
-  
+
     const distX = px - closestX;
     const distY = py - closestY;
-  
+
     return Math.sqrt(distX * distX + distY * distY);
   }
-  
- 
+
+
 
   const handleStageClick = (
     e: KonvaEventObject<MouseEvent | TouchEvent, Node<NodeConfig>>
@@ -188,40 +188,40 @@ const BoardCanvas = () => {
       return;
     }
 
-    
+
 
     if (localPos) {
       switch (activeTool) {
-          case 'pencil':
-            setIsPencilDrawing(true);
-            addShape(localPos.x, localPos.y, "pencil");
-            break;
-          case 'rectangle':
+        case 'pencil':
+          setIsPencilDrawing(true);
+          addShape(localPos.x, localPos.y, "pencil");
+          break;
+        case 'rectangle':
           addShape(localPos.x, localPos.y, "rectangle"); // Add shape relative to the transformed coordinates
           break;
-          case 'circle':
+        case 'circle':
           addShape(localPos.x, localPos.y, "circle"); // Add shape relative to the transformed coordinates
           break;
-          case 'text':
-            addShape(localPos.x, localPos.y, "text"); // Add shape relative to the transformed coordinates
-            break;
-          case 'eraser':
-            {
-              const data = checkIfClickedOnLine(localPos.x, localPos.y);
-              console.log(data.line)
-              if(data.res && canvasData){
-                let filteredCanvas = canvasData.shapes.filter(shape => shape.id !== data.line.id);
+        case 'text':
+          addShape(localPos.x, localPos.y, "text"); // Add shape relative to the transformed coordinates
+          break;
+        case 'eraser':
+          {
+            const data = checkIfClickedOnLine(localPos.x, localPos.y);
+            console.log(data.line)
+            if (data.res && canvasData) {
+              let filteredCanvas = canvasData.shapes.filter(shape => shape.id !== data.line.id);
 
-                setCanvasData({
-                  ...canvasData,
-                  shapes: filteredCanvas
-                })
+              setCanvasData({
+                ...canvasData,
+                shapes: filteredCanvas
+              })
 
-              }
-              break;
             }
-          default:
             break;
+          }
+        default:
+          break;
       }
     }
 
@@ -230,6 +230,30 @@ const BoardCanvas = () => {
       setActiveTool('select'); // Reset the tool after action
     }
 
+  };
+
+  useEffect(() => {
+    if (triggerDownload) {
+
+      handleDownload();
+      setTriggerDownload(false);
+
+    }
+  }, [triggerDownload])
+
+  const handleDownload = () => {
+    if (!stageRef.current) return;
+
+    // Get the data URL of the canvas
+    const uri = stageRef.current.toDataURL({ pixelRatio: 2 });
+
+    // Create a temporary link element
+    const link = document.createElement("a");
+    link.href = uri;
+    link.download = "canvas-board.png"; // File name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
 
@@ -281,7 +305,7 @@ const BoardCanvas = () => {
     const pointerPosition = stage?.getPointerPosition(); // Absolute coordinates
     const transform = stage?.getAbsoluteTransform().copy(); // Copy transform matrix
     transform?.invert(); // Invert the transform to map screen space to local space
-    const point = transform?.point(pointerPosition as Vector2d); 
+    const point = transform?.point(pointerPosition as Vector2d);
 
     return point;
   }
@@ -300,66 +324,107 @@ const BoardCanvas = () => {
       ...canvasData,
       position: { x: newPos.x, y: newPos.y } // Use the new position directly
     });
-};
+  };
 
 
   const handleMouseMove = (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => {
-    if(activeTool === "pencil" && isPencilDrawing){
+    if (activeTool === "pencil" && isPencilDrawing) {
       const stage = e.target.getStage();
       const point = getMatrixPoints(stage);
 
-      if(point){
-          // add point
+      if (point) {
+        // add point
 
-          let newLine = lastLine;
-          if(newLine && newLine.points){
-            
-            setLastLine({
-              ...newLine,
-              points: newLine?.points.concat([point.x, point.y])
-            });
-          }
+        let newLine = lastLine;
+        if (newLine && newLine.points) {
+
+          setLastLine({
+            ...newLine,
+            points: newLine?.points.concat([point.x, point.y])
+          });
+        }
       }
-      
 
 
-      if(canvasData && lastLine?.points ){
 
-        if(lastLine.points?.length > 2){
+      if (canvasData && lastLine?.points) {
+
+        if (lastLine.points?.length > 2) {
           let filteredShapes = canvasData.shapes.filter((shape) => shape.id != lastLine?.id)
           setCanvasData({
             ...canvasData,
             shapes: [
               ...filteredShapes,
               lastLine
-              
+
             ]
           })
-          
-        }else{
+
+        } else {
           let filteredShapes = canvasData.shapes.filter((shape) => shape.id != lastLine?.id)
           setCanvasData({
             ...canvasData,
             shapes: [
               ...filteredShapes,
-              
+
             ]
           })
-          
+
         }
 
       }
     }
   }
   const handleMouseUp = (e: KonvaEventObject<MouseEvent, Node<NodeConfig>>) => {
-    if(activeTool === "pencil" && isPencilDrawing){
+    if (activeTool === "pencil" && isPencilDrawing) {
 
-      
+
       setIsPencilDrawing(false);
       setLastLine(null);
-         
 
-  }}
+
+    }
+  }
+
+  const handleTouchMove = (e: KonvaEventObject<TouchEvent>) => {
+    e.evt.preventDefault(); // Prevent scrolling
+
+    if (activeTool === "pencil" && isPencilDrawing) {
+      const stage = e.target.getStage();
+      const touchPoint = stage?.getPointerPosition();
+
+      if (touchPoint) {
+        let newLine = lastLine;
+        if (newLine?.points) {
+          setLastLine({
+            ...newLine,
+            points: newLine.points.concat([touchPoint.x, touchPoint.y])
+          });
+        }
+      }
+
+      if (canvasData && lastLine?.points) {
+        if (lastLine.points.length > 2) {
+          let filteredShapes = canvasData.shapes.filter((shape) => shape.id !== lastLine?.id);
+          setCanvasData({
+            ...canvasData,
+            shapes: [...filteredShapes, lastLine]
+          });
+        }
+      }
+    }
+  };
+
+
+  const handleTouchEnd = (e: KonvaEventObject<TouchEvent>) => {
+    if (activeTool === "pencil" && isPencilDrawing) {
+      setIsPencilDrawing(false);
+      setLastLine(null);
+    }
+  };
+
+
+
 
 
   return (
@@ -370,10 +435,11 @@ const BoardCanvas = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onTouchStart={handleStageClick}
+      onTouchMove={handleTouchMove}  // Add this
+      onTouchEnd={handleTouchEnd}    // Add this
       onDragEnd={handleStageDrag}
       onDragStart={handleStageDrag}
       onDragMove={handleStageDrag}
-
       ref={stageRef}
       scaleX={scale}
       scaleY={scale}
@@ -382,6 +448,7 @@ const BoardCanvas = () => {
       draggable={activeTool === "hand"}
       onWheel={handleWheel} // Zoom on wheel
     >
+
       <Layer>
 
         {
@@ -408,7 +475,7 @@ const BoardCanvas = () => {
                       let shapes = canvasData?.shapes;
                       shapes.splice(i, 1);
                       shapes.push(shape);
-        
+
                       setCanvasData({
                         ...canvasData,
                         shapes
@@ -550,21 +617,21 @@ const BoardCanvas = () => {
                 break;
               case "pencil":
                 let line = shape;
-                return(
-                                <Line
-                                  key={i}
-                                  points={line.points}
-                                  stroke={
-                                   theme === "dark" && (line.stroke === "#475569") ? 'white' : line.stroke 
-                                    }
-                                  strokeWidth={line.strokeWidth}
-                                  tension={0.5}
-                                  lineCap="round"
-                                  lineJoin="round"
-                                  
-                                  
-                               
-                                />
+                return (
+                  <Line
+                    key={i}
+                    points={line.points}
+                    stroke={
+                      theme === "dark" && (line.stroke === "#475569") ? 'white' : line.stroke
+                    }
+                    strokeWidth={line.strokeWidth}
+                    tension={0.5}
+                    lineCap="round"
+                    lineJoin="round"
+
+
+
+                  />
                 )
               default:
                 break;

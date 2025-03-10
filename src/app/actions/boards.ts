@@ -70,10 +70,26 @@ async function getSingleBoard(boardId: string | undefined) {
             throw new Error("Board not found");
         }
 
+        console.log("board shapes is  : ", board.shapes);
+        console.log("shapes type  is  : ", typeof board.shapes);
+
+        let safeShapes;
+        let safePosition;
+        if(typeof board.shapes === 'object'){
+            safeShapes = board.shapes;
+        }else{
+            safeShapes = JSON.parse(board.shapes as string);
+        }
+        if(typeof board.position === 'object'){
+            safePosition = board.position;
+        }else{
+            safePosition = JSON.parse(board.position as string);
+        }
+
         return {
             ...board,
-            shapes: JSON.parse(board.shapes as string),
-            position: JSON.parse(board.position as string),
+            shapes:   safeShapes,
+            position: safePosition,
         };
     } catch (error) {
         console.error("Error while fetching board:", error);

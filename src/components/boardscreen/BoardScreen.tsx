@@ -19,7 +19,7 @@ function BoardScreen() {
     const { activeTool, setActiveTool, canvasLoading } = useBoardContext();
 
     if (canvasLoading) {
-        return (<div className="bg-muted/50  fixed inset-0 h-screen w-screen z-[1000] flex items-center justify-center">
+        return (<div className="bg-muted/50 text-primary-foreground  fixed inset-0 h-screen w-screen z-[1000] flex items-center justify-center">
             <PuffLoader size={100} />
         </div>)
     }

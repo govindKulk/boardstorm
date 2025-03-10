@@ -14,6 +14,11 @@ import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/AuthContext"
 import { useEffect } from "react"
 import { signOut } from "next-auth/react"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { BiUserCircle } from "react-icons/bi"
+import { BsPerson } from "react-icons/bs"
+import { MdPerson2 } from "react-icons/md"
+import { RiUser2Fill } from "react-icons/ri"
 
 interface UserMenuProps {
   onSignOut?: () => void
@@ -33,18 +38,19 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
     }
   }
 
+  const isMobile = useIsMobile();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="focus:outline-none">
+        <button className="focus:outline-none bg-slate-800 text-white dark:bg-slate-500 rounded-xl  text-center p-2  font-bold shadow-xl hover:cursor-pointer rounded-full inline-flex ">
           {user.image ? (
-            <div className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-slate-400">
+            <div className="relative md:h-10 md:w-10 overflow-hidden rounded-full border-2 border-slate-400">
               <Image src={user.image || "/placeholder.svg"} alt={user.name || "User"} fill className="object-cover" />
             </div>
           ) : (
-            <User2Icon
-              size={50}
-              className="p-2 border-slate-400 border-2 rounded-full bg-slate-800 text-white cursor-pointer hover:bg-slate-700 transition-colors"
+            <RiUser2Fill
+              size={isMobile ? 20 : 30}
+              className=""
             />
           )}
         </button>

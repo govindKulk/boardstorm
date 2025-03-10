@@ -16,7 +16,7 @@ export default function SingleBoardTemplate(
 
 
    
-            <div className={`${open ? 'w-[calc(100vw-255px)]': 'w-full'}`}>
+            <div className={`${open ? 'w-full md:w-[calc(100vw-255px)]': 'w-full'}`}>
               {children}
             </div>
 

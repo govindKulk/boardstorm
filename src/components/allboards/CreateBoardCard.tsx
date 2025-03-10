@@ -62,7 +62,9 @@ function CreateBoardCard() {
 
 
     return (
-        <Modal>
+        <Modal
+        
+        >
             <ModalTrigger>
                 <Card className="flex flex-col items-center justify-center border border-dashed hover:border-primary/50 hover:bg-muted/50 transition-colors cursor-pointer h-[220px]">
                     <CardContent className="flex flex-col items-center justify-center p-6 h-full">
@@ -76,7 +78,7 @@ function CreateBoardCard() {
             </ModalTrigger>
 
             <ModalBody
-            className="min-h-[unset]"
+            className="min-h-[unset] mx-4 sm:ms-8 md:mx-auto rounded-xl"
             >
                 <ModalContent
                 className="justify-center"
@@ -85,7 +87,7 @@ function CreateBoardCard() {
                     className="h-full"
                     >
 
-                        {loading && <div className="absolute inset-0 bg-muted-foreground/50 flex items-center justify-center">
+                        {loading && <div className="absolute inset-0 bg-muted-foreground/50 flex items-center pointer-events-none justify-center">
                             <ClipLoader size={30}/>
 
                         </div>}

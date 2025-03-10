@@ -1,4 +1,6 @@
-import { Calendar, Home, Inbox, Search, Settings, Share } from "lucide-react"
+"use client"
+
+import { Home} from "lucide-react"
 
 import {
   Sidebar,
@@ -14,8 +16,9 @@ import {
 import LiveShareModalButton from "./LiveShareModal"
 import { ModeToggle } from "./homepage/mode-toggle"
 import BrandLogo from "./homepage/BrandLogo"
-import { BiLeftArrow } from "react-icons/bi"
+import { BiDownload, BiLeftArrow } from "react-icons/bi"
 import Link from "next/link"
+import { useBoardContext } from "@/contexts/BoardContext"
 
 // Menu items.
 const items = [
@@ -32,7 +35,10 @@ const items = [
 
 ]
 
+
 export function AppSidebar() {
+
+  const {setTriggerDownload} = useBoardContext();
   return (
     <Sidebar
 
@@ -44,31 +50,44 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                    <LiveShareModalButton />
+                  <LiveShareModalButton />
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>  
+                <SidebarMenuButton asChild>
 
-                    <ModeToggle showThemeText/>  
-         
+                  <ModeToggle showThemeText />
+
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarSeparator  className="bg-muted-foreground"/>
+              <SidebarMenuItem>
+             
+
+                  <div
+                    className="flex gap-2 text-lg px-4 py-2 capitalize hover:backdrop-opacity-40 items-center w-full cursor-pointer"
+                    onClick={() => setTriggerDownload(true)}
+                  
+                  >
+                    Download
+                    <BiDownload size={30} />
+                  </div>
+
+              </SidebarMenuItem>
+              <SidebarSeparator className="bg-muted-foreground" />
 
               <SidebarMenuItem>
                 <div className="w-full px-2 py-2">
 
-                <BrandLogo/>
+                  <BrandLogo />
 
                 </div>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link
-                  href="/boards"
+                    href="/boards"
                   >
-                  <BiLeftArrow size={20}/> Back to Boards.
+                    <BiLeftArrow size={20} /> Back to Boards.
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
