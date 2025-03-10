@@ -95,7 +95,7 @@ export function HeroSection() {
               <Link href="/signup">Get Started for Free</Link>
             </Button>
             <Button size="lg" variant="outline" asChild>
-              <Link href="/demo">Watch Demo</Link>
+              <Link href="/boards/demo">Try Now &rarr;</Link>
             </Button>
           </div>
           <div className="mt-12 w-full max-w-5xl overflow-hidden rounded-lg border bg-background shadow-xl">

@@ -4,7 +4,7 @@ import { SocketClass } from "@/app/socket";
 import { CanvasData } from "@/types/types";
 import { debounce } from "@/utils/debounce";
 import { useSession } from "next-auth/react";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
 import { createContext, Dispatch, SetStateAction, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Socket } from "socket.io-client";
 import { useAuth } from "./AuthContext";
@@ -12,6 +12,7 @@ import { storeBoardData } from "@/app/actions/db";
 import toast from "react-hot-toast";
 import { getSingleBoard } from "@/app/actions/boards";
 import { Router } from "lucide-react";
+import { PuffLoader } from "react-spinners";
 
 interface BoardContextType {
   activeTool: string
@@ -25,7 +26,8 @@ interface BoardContextType {
   setStrokeWidth: Dispatch<SetStateAction<number>>,
   strokeWidth: number,
   setDrawMode: Dispatch<SetStateAction<string>>,
-  drawMode: string
+  drawMode: string,
+  canvasLoading: boolean
 }
 
 let defaultValues: BoardContextType = {
@@ -34,6 +36,7 @@ let defaultValues: BoardContextType = {
   canvasData: {
     shapes: []
   },
+  canvasLoading: true,
   setCanvasData: () => { },
   setSocketRef: () => { },
   setRoomId: () => { },
@@ -70,7 +73,10 @@ export const BoardContextProvider = ({
   console.log("session : ", session);
 
   const [isConnected, setIsConnected] = useState(false);
+  const [canvasLoading, setCanvasLoading] = useState(true);
   const params = useSearchParams()
+  const path = usePathname();
+  const [isDemoPage, setIsDemoPage] = useState(path.split('/')[2] === "demo")
 
 
   const socketRef = useRef<Socket | null>(null)
@@ -81,125 +87,124 @@ export const BoardContextProvider = ({
   }
 
   const router = useRouter();
+
+  
   useEffect(() => {
-
     function onConnect() {
-      console.log("connected..");
-      setIsConnected(true);
-
-
+        console.log("Connected..");
+        setIsConnected(true);
     }
 
     function onDisconnect() {
-      console.log("disconnected..")
-
-      setIsConnected(false);
+        console.log("Disconnected..");
+        setIsConnected(false);
     }
 
-    const room = params.get("room")
-
-    let socket: Socket;
+    const room = params.get("room");
+    let socket: Socket | null = null;
 
     if (room) {
-      socket = SocketClass.getInstance();
-      setSocketRef(socket);
-      socket?.connect();
-      socket?.emit("join-room", { roomid: room });
 
-      socket.on('error-while-room-joining', (data) => {
-        console.log("error while joining : ", data);
-        socket.disconnect();
-      })
+        setTimeout(() => {
+            setCanvasLoading(false);
+        }, 2000);
 
-      socket.on('joined-room', () => {
-        console.log('joined room')
-      })
+        socket = SocketClass.getInstance();
+        setSocketRef(socket);
+        socket.connect();
+        socket.emit("join-room", { roomid: room });
 
-      socket.on("update-canvas", (data) => {
-        if (data.user !== socket.id) {
-          console.log(data)
-          setCanvasData(data.updatedCanvas);
-          console.log("got data from user >> ", data.user);
-        }
-      })
+        socket.on("connect", onConnect);
+        socket.on("disconnect", onDisconnect);
 
-      socket.on("room-closed", () => {
-        const check = confirm("Admin has left the room. Do you want to continue working on the board ?");
-        if(check && boardId){
-          setLocalData(canvasData);
-          router.push('/boards/' + boardId);
-        }else{
-          router.push('/');
-        }
-      })
-    } else {
+        socket.on("error-while-room-joining", (data) => {
+            console.log("Error while joining:", data);
+            socket?.disconnect();
+        });
 
-      if (id) {
-        setBoardId(id as string);
-      }
+        socket.on("joined-room", () => {
+            console.log("Joined room");
+        });
 
-      (async () => {
-        const { error: dbBoardError, data: dbBoardData } = await getSingleBoard(boardId);
-        const boardData = JSON.parse(localStorage.getItem(`board-${boardId}`) || 'null');
-        console.log("board data is", boardData)
-        if (dbBoardError) {
-          console.log(boardData);
-          if (boardData && !isConnected) {
-            console.log('ls data fetch')
-            setCanvasData(boardData);
-          }
-        }else{
-          if(!isConnected && dbBoardData){
-            console.log('db data fetch')
-            const {shapes, position, scale } = dbBoardData;
-
-            if(boardData && boardData.shapes && boardData.shapes.length > shapes.length){
-              setCanvasData(boardData);
-              return;
+        socket.on("update-canvas", (data) => {
+            if (data.user !== socket?.id) {
+                console.log("Received canvas update from:", data.user);
+                setCanvasData(data.updatedCanvas);
             }
-            setCanvasData({
-              shapes,
-              position,
-              scale
-            } as CanvasData);
+        });
 
-
-          }
+        socket.on("room-closed", () => {
+            const check = confirm("Admin has left the room. Do you want to continue working on the board?");
+            if (check && boardId) {
+                setLocalData(canvasData);
+                router.push("/boards/" + boardId);
+            } else {
+                router.push("/");
+            }
+        });
+    } else {
+        if (id) {
+            setBoardId(id as string);
         }
-      })()
 
+        if(isDemoPage){
+          setCanvasLoading(false);
+          const lsBoardData = JSON.parse(localStorage.getItem(`board-demo`) || "null");
+          if(lsBoardData && lsBoardData.shapes && lsBoardData.shapes.length > 0){
+            setCanvasData(lsBoardData);
+          }
+          return;
+        }
 
+        (async () => {
+          const lsBoardData = JSON.parse(localStorage.getItem(`board-${boardId}`) || "null");
+            try {
+                const dbBoardData = await getSingleBoard(boardId);
+                if (!isConnected && dbBoardData) {
+                    console.log("Fetched board from database");
+                    const { shapes, position, scale } = dbBoardData;
 
+                    if (lsBoardData && lsBoardData.shapes.length > shapes.length) {
+                        setCanvasData(lsBoardData);
+                        setCanvasLoading(false);
+                        return;
+                    }
 
-
-
-
-
+                    setCanvasData({ shapes, position, scale } as CanvasData);
+                    setCanvasLoading(false);
+                }
+            } catch (e) {
+                console.error(e);
+                if (!isConnected) {
+                    localStorage.removeItem(`board-${boardId}`);
+                    toast.error("Error fetching your board.");
+                    router.push("/boards");
+                }
+            }
+        })();
     }
 
-    () => {
-      if (socket) {
+    return () => {
+        console.log("Cleaning up...");
+        if (socket) {
+            socket.off("connect", onConnect);
+            socket.off("disconnect", onDisconnect);
+            socket.off("error-while-room-joining");
+            socket.off("joined-room");
+            socket.off("update-canvas");
+            socket.off("room-closed");
+            socket.disconnect(); // Ensure socket disconnects properly
+        }
 
-        socket?.off('connect', onConnect);
-        socket?.off('disconnect', onDisconnect);
+        setDataBaseData(canvasData);
+    };
+}, [boardId]);
 
 
-
-      }
-
-      setDataBaseData(canvasData);
-      setLocalData(canvasData);
-
-    }
-
-    
-    
-  }, [boardId])
-  
   function setLocalData(canvasData: CanvasData) {
     console.log("called set local data")
-    if (boardId) {
-      localStorage.setItem(`board-${boardId}`, JSON.stringify(canvasData
+    if (boardId || isDemoPage) {
+      localStorage.setItem(`board-${boardId || 'demo'}`, JSON.stringify(canvasData
       ));
       toast.success("Locally Saved Data", {
         position: "bottom-left"
@@ -208,8 +213,8 @@ export const BoardContextProvider = ({
   }
 
   async function setDataBaseData(canvasData: CanvasData) {
-    
-    if (userId) {
+
+    if (userId && !isDemoPage) {
       console.log("called set db data")
 
       const { error, data: storedData } = await storeBoardData({
@@ -218,6 +223,7 @@ export const BoardContextProvider = ({
         boardId
       });
       if (error) {
+        console.log(error);
         toast.error("Unable to store board inside database! Try again later");
 
       } else {
@@ -237,7 +243,7 @@ export const BoardContextProvider = ({
 
   return (
     <boardContext.Provider value={{
-      activeTool, setActiveTool, setSocketRef, setRoomId, canvasData, color, setColor, strokeWidth, setStrokeWidth, drawMode, setDrawMode, setCanvasData: (canvasParamsData: CanvasData, isFromSockets = false) => {
+      activeTool, setActiveTool, setSocketRef, canvasLoading, setRoomId, canvasData, color, setColor, strokeWidth, setStrokeWidth, drawMode, setDrawMode, setCanvasData: (canvasParamsData: CanvasData, isFromSockets = false) => {
         debounceSetLocalData(canvasParamsData);
         debounceStoreDbData(canvasParamsData);
         //   let ids = canvasData?.shapes.map(shape => shape.id);
@@ -265,6 +271,7 @@ export const BoardContextProvider = ({
       }
     }} >
 
+    
       {children}
     </boardContext.Provider>
   )

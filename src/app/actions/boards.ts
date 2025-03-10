@@ -56,46 +56,28 @@ async function deleteBoard(boardId: string)  {
         }
     }
 }
-async function getSingleBoard(boardId: string | undefined)  {
-
-
-    if(!boardId){
-        return {
-            error: "Boardid is missing",
-            data: null
-        }
+async function getSingleBoard(boardId: string | undefined) {
+    if (!boardId) {
+        throw new Error("Board ID is missing");
     }
-    
-    
-    try{
 
-        
+    try {
         const board = await prisma.board.findUnique({
-            where: {
-                id: boardId
-            }
-        })
+            where: { id: boardId },
+        });
 
-        if(!board) {
-            return {
-                error: "Board not found",
-                data: null
-            }
+        if (!board) {
+            throw new Error("Board not found");
         }
+
         return {
-            data: {
-                ...board,
-                shapes: JSON.parse(board.shapes as string),
-                position: JSON.parse(board.position as string)
-            },
-            error: null
-        }
-    }catch(error){
-        console.log("erorr while fetching board : ", error);
-        return {
-            error: "error while fetching board",
-            data: null
-        }
+            ...board,
+            shapes: JSON.parse(board.shapes as string),
+            position: JSON.parse(board.position as string),
+        };
+    } catch (error) {
+        console.error("Error while fetching board:", error);
+        throw new Error("Error while fetching board");
     }
 }
 

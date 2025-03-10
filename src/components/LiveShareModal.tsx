@@ -10,11 +10,13 @@ import {
 import { Button } from "./ui/button";
 import { SocketClass } from "@/app/socket";
 import { Socket } from "socket.io-client";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import { CopyCheck, CopyIcon, Share } from "lucide-react";
 import { BsCloudSnowFill } from "react-icons/bs";
 import { useBoardContext } from "@/contexts/BoardContext";
 import Image from "next/image";
+import { ClipLoader } from "react-spinners";
+import { useRenderServiceStatus } from "@/contexts/RenderServiceContext";
 
 
 
@@ -25,13 +27,17 @@ export default function LiveShareModalButton() {
     const [transport, setTransport] = useState("");
     const [roomIdState, setroomIdState] = useState<undefined | string>(undefined);
     const [copied, setCopied] = useState(false);
-
+    const path = usePathname();
+    const [isDemoPage, setIsDemoPage] = useState(path.split('/')[2] === "demo")
     const { canvasData, setSocketRef, setRoomId, setCanvasData } = useBoardContext()
     const canvasDataRef = useRef(canvasData);
     console.log(canvasData, " <*< canvasdata ")
 
+    const [isLoading, setIsLoading] = useState(false);
+    const { isLive } = useRenderServiceStatus();
     async function handleShareClick() {
         try {
+            setIsLoading(true);
 
             socket?.connect();
             if (socket) {
@@ -39,7 +45,12 @@ export default function LiveShareModalButton() {
             }
             socket?.emit("create-room");
 
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 2000)
+
         } catch (e) {
+            setIsLoading(false);
             console.log(e)
         }
     }
@@ -110,6 +121,8 @@ export default function LiveShareModalButton() {
         };
     }, []);
 
+
+
     const params = useParams();
 
     const linkRef = useRef<HTMLSpanElement | null>(null);
@@ -127,7 +140,7 @@ export default function LiveShareModalButton() {
     return (
         <div className="  ">
             <Modal
-     
+
             >
                 <ModalTrigger className=" ">
 
@@ -140,70 +153,70 @@ export default function LiveShareModalButton() {
                     </div>
 
                 </ModalTrigger>
-     
-                    <ModalBody
-                        className="fixed z-50 max-w-md"
+
+                <ModalBody
+                    className="fixed z-50 max-w-md"
+                >
+
+                    <div
+                        className="absolute h-full inset-0 -z-10 bg-muted"
+                    >
+                        <Image className="opacity-20" src="/share-image.png" width={500} height={500} alt="share icon" />
+                    </div>
+                    <ModalContent
+                        className=""
                     >
 
-                        <div
-                            className="absolute h-full inset-0 -z-10 bg-muted"
+
+
+                        <h3 className="text-xl sm:text-2xl font-bold">Share the board with friends.  </h3>
+                        {isConnected && roomIdState && <div
+                            className="bg-green-300/50 py-2 px-4 text-lg  my-auto text-green-700 font-bold rounded-md border-green-500 border-2 overflow-x-hidden"
                         >
-                            <Image className="opacity-20" src="/share-image.png" width={500} height={500} alt="share icon" />
-                        </div>
-                        <ModalContent
-                            className=""
-                        >
+                            Share this link with your friends:
+                            <br />
+                            <span
+                                onClick={handleCopy}
+
+                                ref={linkRef} className="text-sm break-keep border border-green-500 block rounded-xl p-2 text-green-900 hover:bg-green-300/60 transition cursor-pointer ">https://boardstorm.vercel.app/boards/{isDemoPage ? 'demo' : params.id}?room={roomIdState}</span>
+
+                            {!copied ? <span className="flex items-center cursor-pointer text-slate-600 my-2 gap-2 text-sm transition-all">Copy: <CopyIcon
+                                onClick={handleCopy}
+                                size={20} /></span> : <span className="flex items-center cursor-pointer text-slate-600 my-2 gap-2 text-sm transition-all">Copied <CopyCheck size={20} /></span>}
+                        </div>}
 
 
+                    </ModalContent>
 
-                            <h3 className="text-xl sm:text-2xl font-bold">Share the board with friends.  </h3>
-                            {isConnected && roomIdState && <div
-                                className="bg-green-300/50 py-2 px-4 text-lg  my-auto text-green-700 font-bold rounded-md border-green-500 border-2 overflow-x-hidden"
-                            >
-                                Share this link with your friends:
-                                <br />
-                                <span
-                                    onClick={handleCopy}
-
-                                    ref={linkRef} className="text-sm break-keep border border-green-500 block rounded-xl p-2 text-green-900 hover:bg-green-300/60 transition cursor-pointer ">https://boardstorm.vercel.app/boards/{params.id}?room={roomIdState}</span>
-
-                                {!copied ? <span className="flex items-center cursor-pointer text-slate-600 my-2 gap-2 text-sm transition-all">Copy: <CopyIcon
-                                    onClick={handleCopy}
-                                    size={20} /></span> : <span className="flex items-center cursor-pointer text-slate-600 my-2 gap-2 text-sm transition-all">Copied <CopyCheck size={20} /></span>}
-                            </div>}
-
-
-                        </ModalContent>
-
-                        <ModalFooter
-                            className="justify-center"
-                        >
-                            {!isConnected ? <Button
-
-                                className="
+                    <ModalFooter
+                        className="justify-center"
+                    >
+                        {!isConnected ? <Button
+                            disabled={isLoading || !isLive}
+                            className="
                     bg-green-600
                     text-white
-                    
+                    disabled:bg-green-600/70
                     text-xl
                     "
-                                onClick={handleShareClick}
-                            >
-                                Share Now
-                            </Button> : <Button
+                            onClick={handleShareClick}
+                        >
+                            {isLoading || !isLive ? <ClipLoader size={20} /> : "Share Now"}
+                        </Button> : <Button
 
-                                className="
+                            className="
                                         bg-red-600
                                         text-white
                                         text-xl
                                         "
-                                onClick={handleStopShareClick}
-                            >
-                                Stop Sharing
-                            </Button>}
-                        </ModalFooter>
+                            onClick={handleStopShareClick}
+                        >
+                            Stop Sharing
+                        </Button>}
+                    </ModalFooter>
 
-                    </ModalBody>
-              
+                </ModalBody>
+
 
             </Modal>
         </div>

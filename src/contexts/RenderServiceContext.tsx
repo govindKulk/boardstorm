@@ -44,22 +44,24 @@ export default function RenderServiceProvider({
                 if (res.ok) {
                     setIsLive(true);
                     clearInterval(id);
-                    if (true) {
+                   
                         console.log("render is on");
                         toast.success("Render started, enjoy!", {
                             duration: 2000,
                             position: "bottom-right"
                         })
 
-                    }
+                    
                 } 
             }catch(e){
                 console.log(e);
-                console.log("render is off");
-                toast.error("Render is starting, wait!", {
-                    duration: 2000,
-                    position: "bottom-right"
-                })
+              
+                    console.log("render is off");
+                    toast.error("Render is starting, wait!", {
+                        duration: 2000,
+                        position: "bottom-right"
+                    })
+                
             
             }
             
@@ -73,7 +75,7 @@ export default function RenderServiceProvider({
             clearInterval(id);
         }
 
-    }, [])
+    }, [showToast])
 
 
     return (
