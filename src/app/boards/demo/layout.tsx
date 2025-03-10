@@ -18,19 +18,23 @@ export default function RootLayout({
 }>) {
   return (
 
-        <BoardContextProvider>
-    <SidebarProvider>
-      <RenderServiceProvider>
-          <>
-            <AppSidebar />
-            <SingleBoardTemplate children={children} />
-          </>
-
-
-
-
-      </RenderServiceProvider>
-    </SidebarProvider>
-        </BoardContextProvider>
+          <Suspense>
+      
+          <BoardContextProvider>
+            <SidebarProvider>
+              <RenderServiceProvider>
+      
+                <>
+                  <AppSidebar />
+                  <SingleBoardTemplate children={children} />
+                </>
+      
+      
+      
+      
+              </RenderServiceProvider>
+            </SidebarProvider>
+          </BoardContextProvider>
+          </Suspense>
   );
 }

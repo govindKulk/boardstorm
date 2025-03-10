@@ -246,7 +246,7 @@ export const BoardContextProvider = ({
 
 
   return (
-    <Suspense>
+
       <boardContext.Provider value={{
         activeTool, setActiveTool, setSocketRef, canvasLoading, triggerDownload, setTriggerDownload, setRoomId, canvasData, color, setColor, strokeWidth, setStrokeWidth, drawMode, setDrawMode, setCanvasData: (canvasParamsData: CanvasData, isFromSockets = false) => {
           debounceSetLocalData(canvasParamsData);
@@ -280,7 +280,6 @@ export const BoardContextProvider = ({
         {children}
       </boardContext.Provider>
 
-    </Suspense>
   )
 }
 
