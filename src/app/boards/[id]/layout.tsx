@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import SingleBoardTemplate from "@/components/templates/SingleBoardTemplate";
 import { BoardContextProvider } from "@/contexts/BoardContext";
 import RenderServiceProvider from "@/contexts/RenderServiceContext";
+import { Suspense } from "react";
 
 
 export const metadata: Metadata = {
@@ -17,6 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    <Suspense>
+
     <BoardContextProvider>
       <SidebarProvider>
         <RenderServiceProvider>
@@ -32,5 +35,6 @@ export default function RootLayout({
         </RenderServiceProvider>
       </SidebarProvider>
     </BoardContextProvider>
+    </Suspense>
   );
 }
