@@ -18,9 +18,9 @@ export default function RootLayout({
 }>) {
   return (
 
+        <BoardContextProvider>
     <SidebarProvider>
       <RenderServiceProvider>
-        <BoardContextProvider>
           <>
             <AppSidebar />
             <SingleBoardTemplate children={children} />
@@ -28,9 +28,9 @@ export default function RootLayout({
 
 
 
-        </BoardContextProvider>
 
       </RenderServiceProvider>
     </SidebarProvider>
+        </BoardContextProvider>
   );
 }
