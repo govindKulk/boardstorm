@@ -391,7 +391,7 @@ const BoardCanvas = () => {
 
     if (activeTool === "pencil" && isPencilDrawing) {
       const stage = e.target.getStage();
-      const touchPoint = stage?.getPointerPosition();
+      const touchPoint = getMatrixPoints(stage);
 
       if (touchPoint) {
         let newLine = lastLine;
