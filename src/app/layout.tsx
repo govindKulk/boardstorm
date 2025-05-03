@@ -38,7 +38,7 @@ export default function RootLayout({
       >
         <SessionProvider>
           <AuthProvider>
-            <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
               <Navbar/>
               <Toaster/>
               {

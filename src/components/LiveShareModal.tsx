@@ -133,7 +133,7 @@ export default function LiveShareModalButton() {
         setCopied(true)
         setTimeout(() => {
             setCopied(false);
-        }, 5000)
+        }, 3000)
     }
 
 
@@ -171,7 +171,7 @@ export default function LiveShareModalButton() {
 
                         <h3 className="text-xl sm:text-2xl font-bold">Share the board with friends.  </h3>
                         {isConnected && roomIdState && <div
-                            className="bg-green-300/50 py-2 px-4 text-lg  my-auto text-green-700 font-bold rounded-md border-green-500 border-2 overflow-x-hidden"
+                            className="bg-green-300/50 dark:bg-green-300/80 py-2 px-4 text-lg  my-auto text-green-700 font-bold rounded-md border-green-500 border-2 overflow-x-hidden"
                         >
                             Share this link with your friends:
                             <br />

@@ -29,21 +29,44 @@ export default function SignInForm() {
 
 
       <form className="my-8" onSubmit={async (e) => {
-        e.preventDefault();
-        try{
-          signIn("credentials", {
-            email,
-            password,
-            redirectTo: '/boards'
-          }).then(() => {
-            toast.success("Successfully loggedin");
-          })
-        }catch(e) {
-          toast.error("Some error occured!");
-          console.error(e);
+  e.preventDefault();
 
-        }
-      }} >
+  const result = await signIn("credentials", {
+    email,
+    password,
+    redirect: false,
+  });
+
+  console.log("Sign in result:", result);
+
+  try {
+    if (!result?.error) {
+      toast.success("Successfully logged in!");
+      router.push("/boards");
+    } else {
+      // Try to parse structured error
+      const parsedError = JSON.parse(result.error);
+
+      switch (parsedError.code) {
+        case "MISSING_CREDENTIALS":
+          toast.error("Please enter both email and password.");
+          break;
+        case "USER_NOT_FOUND":
+          toast.error("User not found. Please check your email.");
+          break;
+        case "INVALID_PASSWORD":
+          toast.error("Incorrect password. Try again.");
+          break;
+        default:
+          toast.error(parsedError.message || "Login failed. Try again.");
+      }
+    }
+  } catch (err) {
+    console.error("Error parsing auth error:", err);
+    toast.error("Login failed. Please try again.");
+  }
+}}
+ >
         
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
@@ -65,6 +88,7 @@ export default function SignInForm() {
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent my-8 h-[1px] w-full" />
 
+      </form>
         <div className="flex flex-col space-y-4">
           <button
             className=" relative group/btn flex space-x-2 items-center justify-center px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]
@@ -81,7 +105,6 @@ export default function SignInForm() {
     
 
         </div>
-      </form>
       <p className="text-center">
         Don't have an account register <Link href="/signup" className="text-blue-500 font-semibold">here</Link> 
       </p>

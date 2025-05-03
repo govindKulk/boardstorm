@@ -187,7 +187,7 @@ export const BoardContextProvider = ({
         }
       })();
     }
-
+  
     return () => {
       console.log("Cleaning up...");
       if (socket) {
@@ -238,7 +238,7 @@ export const BoardContextProvider = ({
   }
 
   const debounceSetLocalData = useMemo(
-    () => debounce((canvasData) => setLocalData(canvasData), 5000),
+    () => debounce((canvasData) => setLocalData(canvasData), 2000),
     [boardId]
   );
 
@@ -265,6 +265,7 @@ export const BoardContextProvider = ({
 
           //   console.log("difs : ", diffShapes);
 
+          //  if changes made by the user then emit the data to other users.
           if (!isFromSockets) {
             socketRef?.current?.emit("share-canvas", JSON.stringify({
               canvasData: canvasParamsData,

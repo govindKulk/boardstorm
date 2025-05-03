@@ -98,14 +98,13 @@ export function HeroSection() {
               <Link href="/boards/demo">Try Now &rarr;</Link>
             </Button>
           </div>
-          <div className="mt-12 w-full max-w-5xl overflow-hidden rounded-lg border bg-background shadow-xl">
+          <div className="my-16 w-full max-w-5xl relative overflow-hidden rounded-lg border bg-background shadow-xl">
             <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-gradient-to-br from-primary/20 via-muted to-background">
-              <iframe
-                className="absolute inset-0 w-full h-full"
-                src="https://drive.google.com/file/d/1KYgz06iM9O_lo4QNqvOIxVjtNGAoUpiW/preview"
-                allow="autoplay; encrypted-media"
-                allowFullScreen
-              ></iframe>
+              <iframe width="702" height="395" src="https://www.youtube.com/embed/4xPtlVOqG-8"
+                title="BoardStorm: Real-Time Collaborative Whiteboard &amp; Docs App | Built with WebSockets, MongoDB &amp; Konva."
+                className="absolute top-0 left-0 h-full w-full rounded-t-lg border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                ></iframe>
             </div>
           </div>
         </div>

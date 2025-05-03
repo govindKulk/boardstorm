@@ -8,6 +8,7 @@ import { getUserFromDb } from "./utils/db";
 import { User } from "@prisma/client";
 import Google from "next-auth/providers/google";
 import bcrypt from 'bcryptjs';
+import { error } from "console";
 export const {
     auth,
     signIn,
@@ -18,40 +19,38 @@ export const {
     providers: [
         Github,
         Credentials({
+            credentials: {
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" },
+            },
             authorize: async (credentials) => {
                 const { password, email } = credentials;
-
+              
                 if (!password || !email) {
-                    console.log("Missing credentials");
-                    return null;
+                  // Instead of throwing, return null
+                    return Promise.reject(new Error("MISSING_CREDENTIALS"));
                 }
-                
-                try {
-                    const user = await prisma.user.findUnique({
-            
-                        where: { email: email as string }
-                    });
-                    
-                    if (user) {
-                        const passwordMatched = await bcrypt.compare(password as string, user.hashedPassword as string);
-                        if (passwordMatched) {
-                            console.log("Password matched, returning user:", user);
-                            return user;
-                        } else {
-                            console.log("Password not matched");
-                            throw new Error("Username or password is incorrect.");
-                            return null;
-                        }
-                    } else {
-                        console.log("User not registered");
-                        throw new Error("Email does not exist.");
-                        return null;
-                    }
-                } catch (e) {
-                    console.error("Error in authorize function:", e);
-                    return null;
+              
+                const user = await prisma.user.findUnique({
+                  where: { email: email as string },
+                });
+              
+                if (!user) {
+                  return Promise.reject(new Error("USER_NOT_FOUND"));
                 }
-            },
+              
+                const passwordMatched = await bcrypt.compare(password as string, user.hashedPassword!);
+                if (!passwordMatched) {
+                  return Promise.reject(new Error("INVALID_PASSWORD"));
+                }
+              
+                return {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                };
+              },
+              
         }),
     ],
     callbacks: {
@@ -82,6 +81,9 @@ export const {
             return token;
         }
         
+    },
+    pages: {
+        signIn: "/signin",
     },
     session: {
         strategy: "jwt",  // Ensures session persistence

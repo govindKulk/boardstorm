@@ -18,7 +18,7 @@ import { useIsMobile } from "@/hooks/use-mobile"
 import { BiUserCircle } from "react-icons/bi"
 import { BsPerson } from "react-icons/bs"
 import { MdPerson2 } from "react-icons/md"
-import { RiUser2Fill } from "react-icons/ri"
+import { RiUser2Fill, RiUser2Line, RiUser3Line } from "react-icons/ri"
 
 interface UserMenuProps {
   onSignOut?: () => void
@@ -42,15 +42,17 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="focus:outline-none bg-slate-800 text-white dark:bg-slate-500 rounded-xl  text-center p-2  font-bold shadow-xl hover:cursor-pointer rounded-full inline-flex ">
+        <button className="focus:outline-none  text-white  rounded-xl  text-center p-2  font-bold shadow-xl hover:cursor-pointer rounded-full inline-flex ">
           {user.image ? (
             <div className="relative md:h-10 md:w-10 overflow-hidden rounded-full border-2 border-slate-400">
               <Image src={user.image || "/placeholder.svg"} alt={user.name || "User"} fill className="object-cover" />
             </div>
           ) : (
-            <RiUser2Fill
+            <RiUser3Line
               size={isMobile ? 20 : 30}
-              className=""
+              className="
+              text-slate-400
+              "
             />
           )}
         </button>

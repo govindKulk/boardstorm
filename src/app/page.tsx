@@ -11,8 +11,29 @@ import { Footer } from "@/components/homepage/footer"
 import { Navbar } from "@/components/homepage/navbar"
 
 
+export const metadata = {
+  title: "Home | BoardStorm",
+  description: "BoardStorm is a collaborative whiteboard tool for brainstorming and organizing ideas.",
+  // openGraph: {
+  //   title: "Home | BoardStorm",
+  //   description: "BoardStorm is a collaborative whiteboard tool for brainstorming and organizing ideas.",
+  //   url: "https://boardstorm.com",
+  //   images: [
+  //     {
+  //       url: "https://boardstorm.com/og-image.png",
+  //       width: 1200,
+  //       height: 630,
+  //       alt: "BoardStorm - Collaborative Whiteboard Tool",
+  //       type: "image/png",  
+  //     }
+  //   ]
+  // }
+}
+
 
 export default function Home() {
+
+
   return (
     <div className="min-h-screen flex flex-col">
       <main className="flex-1">

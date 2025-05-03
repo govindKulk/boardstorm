@@ -36,7 +36,7 @@ const mockUser = {
 
 export default function AccountPage() {
     // const user = mockUser
-    const [user, setUser] = useState(mockUser);
+    const [user, setUser] = useState<null | typeof mockUser>(null);
 
 
     const {status, userId} =  useAuth()
@@ -62,13 +62,13 @@ export default function AccountPage() {
         fetchUser();
     }, [userId, status])
     // Format dates
-    const createdAtFormatted = new Date(user.createdAt).toLocaleDateString("en-US", {
+    const createdAtFormatted = user && new Date(user.createdAt).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
     })
 
-    const emailVerifiedFormatted = user.emailVerified
+    const emailVerifiedFormatted = user && user.emailVerified
         ? new Date(user.emailVerified).toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
@@ -77,9 +77,11 @@ export default function AccountPage() {
         : "Not verified"
 
 
-    if(status !== "authenticated" || !user){
+    if(status !== "authenticated" || user == null){
         return <AccountPageSkeleton/>
     }
+
+
 
 
     return (
