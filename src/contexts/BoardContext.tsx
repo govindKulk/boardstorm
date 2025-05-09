@@ -218,7 +218,7 @@ export const BoardContextProvider = ({
 
   async function setDataBaseData(canvasData: CanvasData) {
 
-    if (userId && !isDemoPage) {
+    if (userId && !isDemoPage && canvasData) {
       console.log("called set db data")
 
       const { error, data: storedData } = await storeBoardData({

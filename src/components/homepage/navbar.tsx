@@ -57,19 +57,24 @@ const components: { title: string; href: string; description: string }[] = [
 ]
 
 export function Navbar() {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = React.useState(false);
 
-  
-  if(pathname.split('/')[1] == 'boards'){
+  // set sheetOpen to false when the user clicks on a link
+  const handleLinkClick = () => {
+    setSheetOpen(false);
+  };
+
+
+  if (pathname.split('/')[1] == 'boards') {
     return;
   }
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between">
 
-          <BrandLogo/>
+        <BrandLogo />
 
 
         {/* Desktop Navigation */}
@@ -88,7 +93,7 @@ export function Navbar() {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem> */}
-    
+
               {/* <NavigationMenuItem>
                 <Link href="/pricing" legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>Pricing</NavigationMenuLink>
@@ -113,36 +118,36 @@ export function Navbar() {
 
           {/* Mobile Navigation */}
           <div className="md:hidden">
-          <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Menu className="h-5 w-5" />
-          <span className="sr-only">Toggle menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="right">
-        <nav className="flex flex-col gap-4 mt-8">
-          <Link href="/features" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
-            Features
-          </Link>
-          <Link href="/solutions" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
-            Solutions
-          </Link>
-          <Link href="/pricing" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
-            Pricing
-          </Link>
-          <Link href="/blog" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
-            Blog
-          </Link>
-          <div className="flex flex-col gap-2 mt-4">
-            <UserMenu onSignOut={() => { 
-              console.log("Sign out clicked"); 
-              setSheetOpen(false); // Close the sheet on sign out
-            }} />
-          </div>
-        </nav>
-      </SheetContent>
-    </Sheet>
+            <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <nav className="flex flex-col gap-4 mt-8">
+                  <Link  href="/features" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
+                    Features
+                  </Link>
+                  <Link  href="/solutions" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
+                    Solutions
+                  </Link>
+                  <Link  href="/pricing" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
+                    Pricing
+                  </Link>
+                  <Link  href="/blog" className="text-lg font-medium" onClick={() => setSheetOpen(false)}>
+                    Blog
+                  </Link>
+                  <div className="flex flex-col gap-2 mt-4">
+                    <UserMenu onSignOut={() => {
+                      console.log("Sign out clicked");
+                      setSheetOpen(false); // Close the sheet on sign out
+                    }}  />
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>

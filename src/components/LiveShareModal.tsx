@@ -35,6 +35,8 @@ export default function LiveShareModalButton() {
 
     const [isLoading, setIsLoading] = useState(false);
     const { isLive } = useRenderServiceStatus();
+
+    const [liveLink, setLiveLink] = useState("");
     async function handleShareClick() {
         try {
             setIsLoading(true);
@@ -94,6 +96,7 @@ export default function LiveShareModalButton() {
             console.log("created-room : ", data.roomId);
             roomId = data.roomId;
             setroomIdState(data.roomId);
+            setLiveLink(`https://boardstorm.vercel.app/boards/${isDemoPage ? 'demo' : params.id}?room=${data.roomId}`);
             setRoomId(roomId);
         })
         socket?.on("collaborator-joined", (data) => {
@@ -155,30 +158,32 @@ export default function LiveShareModalButton() {
                 </ModalTrigger>
 
                 <ModalBody
-                    className="fixed z-50 max-w-md"
+                    className="fixed fixed z-100 max-w-[80vw]  md:max-w-md rounded-lg"
                 >
 
                     <div
-                        className="absolute h-full inset-0 -z-10 bg-muted"
+                        className="absolute h-full inset-0 -z-10 bg-muted flex items-center justify-center"
                     >
                         <Image className="opacity-20" src="/share-image.png" width={500} height={500} alt="share icon" />
                     </div>
                     <ModalContent
-                        className=""
+                        className="my-4"
                     >
 
 
 
                         <h3 className="text-xl sm:text-2xl font-bold">Share the board with friends.  </h3>
                         {isConnected && roomIdState && <div
-                            className="bg-green-300/50 dark:bg-green-300/80 py-2 px-4 text-lg  my-auto text-green-700 font-bold rounded-md border-green-500 border-2 overflow-x-hidden"
+                            className="bg-green-300/50 dark:bg-green-300/80 py-2 px-4 sm:text-lg  my-auto text-green-700 font-bold rounded-md border-green-500 border-2 overflow-x-hidden"
                         >
                             Share this link with your friends:
                             <br />
                             <span
                                 onClick={handleCopy}
 
-                                ref={linkRef} className="text-sm break-keep border border-green-500 block rounded-xl p-2 text-green-900 hover:bg-green-300/60 transition cursor-pointer ">https://boardstorm.vercel.app/boards/{isDemoPage ? 'demo' : params.id}?room={roomIdState}</span>
+                                ref={linkRef} className="text-sm break-keep border border-green-500 block rounded-xl p-2 text-green-900 hover:bg-green-300/60 transition cursor-pointer ">
+                                    {liveLink}
+                                </span>
 
                             {!copied ? <span className="flex items-center cursor-pointer text-slate-600 my-2 gap-2 text-sm transition-all">Copy: <CopyIcon
                                 onClick={handleCopy}

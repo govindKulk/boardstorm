@@ -70,7 +70,7 @@ export default function SignInForm() {
         
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="projectmayhem@fc.com" type="email" onChange={e => setEmail(e.target.value)}/>
+          <Input id="email" placeholder="yourmail@domain.com" type="email" onChange={e => setEmail(e.target.value)}/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>

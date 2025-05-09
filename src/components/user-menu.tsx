@@ -29,7 +29,7 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
   const {user} = useAuth();
 
   if (!user) {
-    return <SignInButton />
+    return <SignInButton handleSheetClose={onSignOut}/>
   }
 
   const handleSignOut = () => {
@@ -42,7 +42,7 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="focus:outline-none  text-white  rounded-xl  text-center p-2  font-bold shadow-xl hover:cursor-pointer rounded-full inline-flex ">
+        <button className="focus:outline-none  text-white   text-center p-2  font-bold shadow-xl hover:cursor-pointer rounded-full inline-flex  self-start bg-slate-100 dark:bg-muted border border-slate-500 dark:border-slate-100 ">
           {user.image ? (
             <div className="relative md:h-10 md:w-10 overflow-hidden rounded-full border-2 border-slate-400">
               <Image src={user.image || "/placeholder.svg"} alt={user.name || "User"} fill className="object-cover" />
@@ -57,7 +57,7 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
+      <DropdownMenuContent align="start" className="w-56">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">{user.name || "User"}</p>
@@ -72,7 +72,9 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/boards" className="flex w-full cursor-pointer items-center">
+          <Link href="/boards"
+          
+          className="flex w-full cursor-pointer items-center">
             <LayoutDashboardIcon className="mr-2 h-4 w-4" />
             <span>My Boards</span>
           </Link>
@@ -87,10 +89,20 @@ export function UserMenu({ onSignOut = () => signOut() }: UserMenuProps) {
   )
 }
 
-function SignInButton() {
+function SignInButton({
+  handleSheetClose
+}: {
+  handleSheetClose: () => void
+}) {
   return (
-    <Button variant="outline" size="sm" asChild>
-      <Link href="/signin">Log in</Link>
+    <Button variant="outline" size="sm"
+    onClick={() => {
+      handleSheetClose?.();
+    }}
+    asChild>
+      <Link href="/signin"
+      
+      >Log in</Link>
     </Button>
   )
 }

@@ -41,7 +41,7 @@ export function AppSidebar() {
   const {setTriggerDownload} = useBoardContext();
   return (
     <Sidebar
-
+    className="z-20"
     >
       <SidebarContent>
         <SidebarGroup>
