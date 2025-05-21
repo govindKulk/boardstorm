@@ -308,22 +308,6 @@ const toolsData = [
     icon: BiEraser,
     name: "eraser"
   },
-  // {
-  //   icon: IoIosColorPalette,
-  //   name: "colorPicker"
-  // },
-  // {
-  //   icon: PiPaintBrushDuotone,
-  //   name: "stroke"
-  // }
-  // {
-  //   icon: GoHorizontalRule,  
-  //   name: "line"
-  // },
-  // {
-  //   icon: FaRegStar,
-  //   name: "star"
-  // },
 ]
 
 const colors = [

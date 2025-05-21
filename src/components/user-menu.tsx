@@ -96,12 +96,9 @@ function SignInButton({
 }) {
   return (
     <Button variant="outline" size="sm"
-    onClick={() => {
-      handleSheetClose?.();
-    }}
+
     asChild>
       <Link href="/signin"
-      
       >Log in</Link>
     </Button>
   )

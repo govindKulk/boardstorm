@@ -1,0 +1,65 @@
+{
+    "shapes": [
+        {
+            "id": "circle-id-b4b56f75-134f-4c67-b7ae-8f9076df4e39",
+            "x": 345.11602208842066, // JUST CHANGE THIS VALUES FOR THE NEXT CIRCLES IN X DIRECTION
+            "y": 181.0853612518172, // JUST CHANGE THIS FOR THE NEXT CIRCLE IN Y DIRECTION
+            "radius": 50, // USE THIS FOR THE CIRCLES
+            "fontSize": 45,
+            "strokeWidth": 9,
+            "type": "circle",
+            "text": "Add Your Text Here", // THIS PROPERTY HAS NO EFFECT
+            "fill": "#22d3ee", // DEFINES FILL OR STROKE MODE 
+            "width": 283.5710879343333
+        },
+        {
+            "id": "text-id-021d0f3e-70de-4c2b-a962-3f34124073e0",
+            "x": 218.82068003316695, // SET X VALUE CLOSE TO THE X VALUE OF THE SHAPE LIKE HERE IWTH -130 DIFFERNECE
+            "y": 152.29889975712535, // SET Y VALUE WITH -30 DIFFERENCE
+            "radius": 50, // NO EFFECT
+            "fontSize": 45, // ALWAYS USE IT
+            "type": "text",
+            "text": "PLANNING\n", // THIS IS THE LABEL FOR THE FIRST CIRCLE
+            "fill": "#ef4444" // USE TEXT COLOR WHICH IS DIFFERENT THAN FILL COLOR OF THE SHAPE
+        },
+        {
+            "id": "text-id-fe18dfbb-9d82-400d-9f57-8143624a6122",
+            "x": 511.1372550366117,
+            "y": 161.79874708603342,
+            "radius": 50,
+            "fontSize": 15,
+            "type": "text",
+            "text": "->",
+            "fill": "#475569",
+            "width": 38.62998279651925,
+            "height": 22.499999999999968
+        },
+        {
+            "id": "circle-id-02555f95-41d5-440d-a96e-49f5f530c570",
+            "x": 704.0536848210155,
+            "y": 190.88499060934396,
+            "radius": 50,
+            "fontSize": 15,
+            "strokeWidth": 3,
+            "type": "circle",
+            "text": "Add Your Text Here",
+            "stroke": "#d946ef",
+            "width": 299.82560178454463
+        },
+        {
+            "id": "text-id-3f7a9002-3adf-4f47-91be-1423b4542573",
+            "x": 589.8044531037463,
+            "y": 153.17122429542462,
+            "radius": 50,
+            "fontSize": 45,
+            "type": "text",
+            "text": "ANALYSIS\n",
+            "fill": "#6366f1"
+        }
+    ],
+    "position": {
+        "x": 21.91309703645686,
+        "y": 274.48823924524754
+    },
+    "scale": 0.7106813301301212
+}
