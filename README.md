@@ -1,36 +1,131 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Boardstorm
 
-## Getting Started
+An online collaborative whiteboard for brainstorming and sketching ideas in real time — built with Next.js, TypeScript, and Socket.IO. Think of it as an Excalidraw-inspired canvas with live collaboration.
 
-First, run the development server:
+- Live demo: https://boardstorm.vercel.app
 
+## Table of Contents
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Environment Variables](#environment-variables)
+- [Scripts](#scripts)
+- [Deployment](#deployment)
+- [Roadmap](#roadmap)
+- [Author](#author)
+- [License](#license)
+
+## Features
+- Real-time collaboration powered by WebSockets (Socket.IO)
+- Smooth, responsive canvas optimized for modern browsers
+- Intuitive drawing experience for brainstorming and planning
+- Share a board link to collaborate with others
+- Vercel-ready deployment
+
+Note: Exact toolset and capabilities may evolve; check commit history and the live demo for the latest.
+
+## Tech Stack
+- Framework: Next.js (React)
+- Language: TypeScript
+- Real-time: Socket.IO
+- Runtime: Node.js
+- Hosting: Vercel
+
+## Installation
+
+Prerequisites:
+- Node.js 18+ (recommended)
+- npm (or your preferred package manager)
+
+Clone and install:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/govindKulk/boardstorm.git
+cd boardstorm
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Start the dev server:
+```bash
+npm run dev
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open your browser at:
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Usage
+- Start the development server and open the app locally.
+- Create or open a board.
+- Share the board URL with teammates to collaborate in real time.
+- Use the canvas to sketch ideas, plan features, or diagram flows.
 
-## Learn More
+Tip: For best results, use a modern Chromium-based browser or Firefox.
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The app can run locally without special configuration, but if you use a separate Socket.IO server or need public URLs, you may configure environment variables.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create a `.env.local` file in the project root:
 
-## Deploy on Vercel
+```bash
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## DATABASE & NEXTAUTH SECRETS
+DATABASE_URL = "mongodb-database-url"
+AUTH_SECRET = ""
+AUTH_URL = ""
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## GITHUB OAUTH
+AUTH_GITHUB_ID = ""
+AUTH_GITHUB_SECRET = ""
+
+## AI FEATURES
+GEMINI_API_KEY = ""
+```
+
+If no external Socket.IO server is needed, you can leave these unset.
+
+## Scripts
+
+Common scripts (your project may have more):
+
+```bash
+# Start local development
+npm run dev
+
+# Build for production
+npm run build
+
+# Start production server (after build)
+npm run start
+
+# Lint the codebase
+npm run lint
+```
+
+## Deployment
+
+The app is live on Vercel:
+- https://boardstorm.vercel.app
+
+To deploy your own:
+- Push the repository to GitHub.
+- Import the project into Vercel and follow the prompts.
+- Set any required environment variables in the Vercel dashboard.
+- Trigger a deployment; Vercel handles build and hosting.
+
+## Roadmap
+- Enhanced drawing tools (shapes, text, colors)
+- Presence indicators and multi-cursor support
+- Board persistence and history
+- Export/import boards
+- Performance optimizations and mobile refinements
+
+Contributions and ideas are welcome!
+
+## Author
+
+- GitHub: [@govindKulk](https://github.com/govindKulk)
+- Project: https://github.com/govindKulk/boardstorm
+- Live: https://boardstorm.vercel.app
