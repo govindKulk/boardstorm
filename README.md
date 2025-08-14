@@ -1,4 +1,4 @@
-# Boardstorm
+# <img width="181" height="55" alt="boardstorm-logo" src="https://github.com/user-attachments/assets/7d4b1f0a-6ff7-4551-8809-4b219580816b" />
 
 An online collaborative whiteboard for brainstorming and sketching ideas in real time — built with Next.js, TypeScript, and Socket.IO. Think of it as an Excalidraw-inspired canvas with live collaboration.
 
@@ -63,11 +63,15 @@ http://localhost:3000
 
 Tip: For best results, use a modern Chromium-based browser or Firefox.
 
+### **WATCH VIDEO**
+[![Watch the video](https://img.youtube.com/vi/4xPtlVOqG-8/maxresdefault.jpg)](https://www.youtube.com/watch?v=4xPtlVOqG-8)
+
+
 ## Environment Variables
 
 The app can run locally without special configuration, but if you use a separate Socket.IO server or need public URLs, you may configure environment variables.
 
-Create a `.env.local` file in the project root:
+Create a `.env` file in the project root:
 
 ```bash
 
@@ -83,8 +87,6 @@ AUTH_GITHUB_SECRET = ""
 ## AI FEATURES
 GEMINI_API_KEY = ""
 ```
-
-If no external Socket.IO server is needed, you can leave these unset.
 
 ## Scripts
 
